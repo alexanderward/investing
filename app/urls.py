@@ -16,5 +16,6 @@ partial_patterns = [
 urlpatterns = [
     # url(r'test-alarm/(?P<alarm_id>\d+)/$', views.test_alarm, name='test_alarm'),
     url(r'^partials/', include(partial_patterns, namespace='partials')),
-    url(r'^', views.index, name='index'),
+    url(r'^login.html$', views.Login.as_view(), name='login'),
+    url(r'^', views.Index.as_view(), name='index'),
 ]

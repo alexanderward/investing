@@ -25,7 +25,7 @@ SECRET_KEY = 'j8j*j8^i8x9aoytogi7(8fb$ina)o)v!@k@kx6kw6_*)p6f_cy'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+AUTH_USER_MODEL = 'app.User'
 # Application definition
 
 INSTALLED_APPS = [
@@ -124,8 +124,8 @@ REST_FRAMEWORK = {
     ],
     'PAGE_SIZE': 1000,
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
-        , ]
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        ]
 
 }

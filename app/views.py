@@ -1,11 +1,14 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views import View
 from django.views.generic import TemplateView
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.status import HTTP_201_CREATED
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from rest_framework.renderers import JSONRenderer
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout
 
 
 class PartialGroupView(TemplateView):
@@ -68,5 +71,25 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-def index(request):
-    return render(request, 'index.html')
+class Login(View):
+    def get(self, request):
+        logout(request)
+        return render(request, 'login.html')
+
+    def post(self, request):
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/')
+        else:
+            return render(request, 'login.html', context={'error': 'Invalid Email/Password'})
+
+
+class Index(LoginRequiredMixin, View):
+    login_url = 'login.html'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request):
+        return render(request, 'index.html')
