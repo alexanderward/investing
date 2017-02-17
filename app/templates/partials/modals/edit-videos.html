@@ -1,0 +1,155 @@
+<div class="modal-scrollable">
+    <div class="modal fade" id="newAlarmModal" tabindex="-1" role="dialog" aria-labelledby="newAlarmModalLabel" aria-hidden="true" ng-controller="EditVideoCtrl">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h2 class="modal-title" id="newAlarmModalLabel"><strong>Add/Edit Alarms</strong></h2>
+                </div>
+                <div class="modal-body">
+                    <div class="jarviswidget jarviswidget-color-greenDark jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false" data-widget-attstyle="jarviswidget-color-blueDark" role="widget" style="">
+
+                    <header role="heading"><div class="jarviswidget-ctrls" role="menu"></div>
+                        <span class="widget-icon"> <i class="fa fa-plus"></i> </span>
+                        <h2>Add a Video </h2>
+                        <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+                    </header>
+
+                    <!-- widget div-->
+                    <div role="content">
+                        <!-- widget content -->
+                        <div class="widget-body no-padding">
+
+                            <form class="smart-form" novalidate="novalidate" name="formCreateForm">
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <br>
+                                            <section class="col col-md-12 col-xs-12">
+                                                <label class="input form-control"> <i class="icon-prepend fa fa-paperclip"></i>
+                                                    <input type="text" name="name" placeholder="Video name" ng-model="createForm.name" required>
+                                                </label>
+                                                <div class="has-error note note-error" ng-show="formCreateForm.$invalid">
+                                                   <span class="form-error" ng-show="formCreateForm.name.$error.required">This is a required field</span>
+                                                   <span class="form-error" ng-show="formCreateForm.name.$error.minlength">Minimum length required is 3</span>
+                                               </div>
+                                            </section>
+                                            <br>
+                                            <section class="col col-md-12 col-xs-12">
+                                                <label class="input form-control"> <i class="icon-prepend fa fa-youtube"></i>
+                                                        <input type="url" name="url" placeholder="YouTube URL" ng-model="createForm.url" required>
+                                                    </label>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <section class="col col-md-12 col-xs-12">
+                                        <div class="form-group" style="float:right">
+                                            <button type="submit" class="btn btn-success btn-sm" ng-click="save(createForm, 'create')" ng-disabled="!formCreateForm.$valid">
+                                                <span class="glyphicon glyphicon-floppy-disk"></span> Save
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm" ng-click="preview(createForm.url)"  ng-disabled="!formCreateForm.url.$valid">
+                                                <span class="glyphicon glyphicon-eye-open"></span> Preview
+                                            </button>
+                                        </div>
+                                    </section>
+                                </fieldset>
+                            </form>
+
+                        </div>
+                        <!-- end widget content -->
+
+                    </div>
+                    <!-- end widget div -->
+
+                </div>
+                    <div class="jarviswidget jarviswidget-color-orangeDark jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false" data-widget-attstyle="jarviswidget-color-blueDark" role="widget" style="">
+
+                        <header role="heading"><div class="jarviswidget-ctrls" role="menu"></div>
+                            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                            <h2>Edit a Video </h2>
+                            <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+                        </header>
+
+                        <!-- widget div-->
+                        <div role="content">
+                            <!-- widget content -->
+                            <div class="widget-body no-padding">
+
+                                <form class="smart-form" novalidate="novalidate" name="formUpdateForm">
+                                    <fieldset>
+                                        <section class="col col-md-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div>
+                                                    <div class="input-group">
+                                                        <select name="videoDropdown" ng-model="dropDownVideo" ng-change="updateFormDropDownWatcher(dropDownVideo)" required ng-options="option as option.name for option in dropDownVideos track by option.id" class="form-control">
+                                                            <option value="" disabled selected>Select a Video to Edit</option>
+                                                        </select>
+                                                        <span class="input-group-btn" data-toggle="modal"  ng-click="delete(dropDownVideo)"> <!--data-target="#verify-alarm-delete"-->
+                                                            <button class="btn btn-danger" style="padding: 7px 10px 7px 10px;margin-left: 5px;"> <i class="fa fa-trash"></i> </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <div class="row">
+                                            <div class="col-md-12 form-group">
+                                                <br>
+                                                <section class="col col-md-12 col-xs-12">
+                                                    <label class="input form-control"> <i class="icon-prepend fa fa-paperclip"></i>
+                                                        <input type="text" name="name" placeholder="Video name" ng-model="updateForm.name" required>
+                                                    </label>
+                                                    <div class="has-error note note-error" ng-show="formCreateForm.$invalid">
+                                                       <span class="form-error" ng-show="formUpdateForm.name.$error.required">This is a required field</span>
+                                                       <span class="form-error" ng-show="formUpdateForm.name.$error.minlength">Minimum length required is 3</span>
+                                                   </div>
+                                                </section>
+                                                <br>
+                                                <section class="col col-md-12 col-xs-12">
+                                                    <label class="input form-control"> <i class="icon-prepend fa fa-youtube"></i>
+                                                            <input type="url" name="url" placeholder="YouTube URL" ng-model="updateForm.url" required>
+                                                        </label>
+                                                </section>
+                                            </div>
+                                        </div>
+
+
+                                        <section class="col col-md-12 col-xs-12">
+                                        <div class="form-group" style="float:right">
+                                            <button type="submit" class="btn btn-success btn-sm" ng-click="save(updateForm, 'update')" ng-disabled="!formUpdateForm.$valid">
+                                                <span class="glyphicon glyphicon-floppy-disk"></span> Save
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm" ng-click="preview(updateForm.url)" ng-disabled="!formUpdateForm.url.$valid">
+                                                <span class="glyphicon glyphicon-eye-open"></span> Preview
+                                            </button>
+                                        </div>
+                                    </section>
+                                    </fieldset>
+                                </form>
+
+                            </div>
+                            <!-- end widget content -->
+
+                        </div>
+                        <!-- end widget div -->
+
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+
+    </div>
+{#    <div class="modal divMessageBox animated fadeIn fast" id="verify-alarm-delete">#}
+{#        <div class="MessageBoxContainer animated fadeIn fast" id="Msg1">#}
+{#            <div class="MessageBoxMiddle">#}
+{#                <span class="MsgTitle">Deleting Video!</span>#}
+{#                <p class="pText">Are you sure you want to delete this video?</p>#}
+{#                <div class="MessageBoxButtonSection">#}
+{#                    <button id="bot1-Msg1" class="btn btn-default btn-sm botTempo" ng-click=""> No</button>#}
+{#                    <button id="bot2-Msg1" class="btn btn-default btn-sm botTempo"> Yes</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+</div>
