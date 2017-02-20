@@ -60,9 +60,17 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                 }
             })
             .state('reportMethod3', {
-                
+
                 templateUrl: '/partials/research-method1.html',
                 controller: 'DashboardTransactionsCtrl',
+                params: {
+                    notification: null
+                }
+            })
+            .state('dictionary', {
+                url: '/dictionary',
+                templateUrl: '/partials/dictionary.html',
+                controller: 'DefinitionsCtrl',
                 params: {
                     notification: null
                 }

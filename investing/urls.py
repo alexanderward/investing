@@ -17,15 +17,15 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 
+from app.views import DefinitionsViewset, UserFinancialsViewset
+
 router = routers.DefaultRouter()
-# router.register(r'alarms', AlarmViewSet, base_name='Alarm')
-# router.register(r'alarms/(?P<id>\d+)/?$', AlarmViewSet, base_name='Alarm')
-# router.register(r'videos', VideoViewSet, base_name='Video')
-# router.register(r'videos/(?P<id>\d+)/?$', VideoViewSet, base_name='Video')
+router.register(r'definitions', DefinitionsViewset, base_name='Definitions')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
+    url(r'^api/financials/', UserFinancialsViewset.as_view({'get': 'list'})),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('app.urls', namespace='app')),
 ]

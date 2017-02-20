@@ -1,3 +1,6 @@
+from rest_framework import mixins
+
+from app.models import Definitions, Financials
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -10,6 +13,8 @@ from rest_framework.renderers import JSONRenderer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 
+from app.serializers import DictionarySerializer, FinancialsSerializer
+
 
 class PartialGroupView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -21,8 +26,11 @@ class PartialGroupView(TemplateView):
 class GenericViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         queryset = self.queryset
-        serializer = self.get_serializer(self.paginate_queryset(queryset), many=True)
-        return JSONResponse(serializer.data)
+        if queryset:
+            serializer = self.get_serializer(self.paginate_queryset(queryset), many=True)
+            return JSONResponse(serializer.data)
+        else:
+            return JSONResponse([])
 
     def create(self, request, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -87,9 +95,47 @@ class Login(View):
             return render(request, 'login.html', context={'error': 'Invalid Email/Password'})
 
 
+class CurrentFinancials(LoginRequiredMixin, View):
+    login_url = 'login.html'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request):
+        queryset = Financials.objects.filter(user=request.user).latest('timestamp')
+        serializer = FinancialsSerializer(queryset)
+        return JsonResponse(serializer.data)
+
 class Index(LoginRequiredMixin, View):
     login_url = 'login.html'
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
-        return render(request, 'index.html')
+        context = dict(user={})
+        context['user']['email'] = request.user.email
+        context['user']['fullname'] = request.user.get_full_name()
+        context['user']['avatar'] = "static" + "/".join(request.user.avatar.url.split('static')[1:])
+
+        from creds import get_robinhood_creds
+        from robinhood import RobinHood
+        rh = RobinHood()
+        username, password = get_robinhood_creds()
+        assert rh.login(username, password)
+        context['user']['funds'] = rh.get_account_balance()
+
+        return render(request, 'index.html', context=context)
+
+
+class DefinitionsViewset(GenericViewSet):
+    serializer_class = DictionarySerializer
+    queryset = Definitions.objects.all().order_by('title')
+
+    def __init__(self, **kwargs):
+        super(DefinitionsViewset, self).__init__(**kwargs)
+
+
+class UserFinancialsViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = FinancialsSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = Financials.objects.filter(user__id=request.user.id)
+        serializer = self.serializer_class(queryset, many=True)
+        return JSONResponse(serializer.data)

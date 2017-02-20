@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us" ng-app="app">
+<html lang="en-us" ng-app="app" ng-cloak>
 {% load staticfiles %}
 	<head>
 		<meta name="mobile-web-app-capable" content="yes">
@@ -144,7 +144,7 @@
 				<ul id="mobile-profile-img" class="header-dropdown-list hidden-xs padding-5">
 					<li class="">
 						<a href="#" class="dropdown-toggle no-margin userdropdown" data-toggle="dropdown">
-							<img src="{% static 'img/avatars/sunny.png' %}" alt="John Doe" class="online" />
+							<img src="{{ user.avatar }}" alt={{ user.fullname }} class="online" />
 						</a>
 						<ul class="dropdown-menu pull-right">
 							<li>
@@ -295,9 +295,9 @@
 				<span> <!-- User image size is adjusted inside CSS, it should stay as it -->
 
 					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-						<img src="{% static 'img/avatars/sunny.png' %}" alt="me" class="online" />
+						<img src="{{ user.avatar }}" alt="me" class="online" />
 						<span>
-							john.doe
+							{{ user.fullname }}
 						</span>
 						<i class="fa fa-angle-down"></i>
 					</a>
@@ -306,7 +306,7 @@
 			</div>
 			<!-- end user info -->
 
-			<nav>
+			<nav ng-controller="NavCtrl">
 				<!--
 				NOTE: Notice the gaps after each icon usage <i></i>..
 				Please note that these links work a bit different than
@@ -317,10 +317,10 @@
 					<li>
 						<a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">Dashboard</span></a>
 						<ul>
-							<li class="active">
+							<li ng-class="{active: isActive('/')}">
 								<a ui-sref="dashboardOverview" title="Dashboard"><span class="menu-item-parent">Overview</span></a>
 							</li>
-							<li class="">
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="dashboardTransactions" title="Transactions"><span class="menu-item-parent">Transactions</span></a>
 							</li>
 						</ul>
@@ -328,13 +328,13 @@
 					<li class="top-menu-invisible">
 						<a href="#"><i class="fa fa-lg fa-fw fa-cube txt-color-blue"></i> <span class="menu-item-parent">Analytics</span></a>
 						<ul>
-							<li class="">
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="analyticsStrategy1" title="Strategy 1"><i class="fa fa-lg fa-fw fa-gear"></i> <span class="menu-item-parent">Strategy 1</span></a>
 							</li>
-							<li class="">
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="analyticsStrategy2" title="Strategy 2"><i class="fa fa-lg fa-fw fa-picture-o"></i> <span class="menu-item-parent">Strategy 2</span></a>
 							</li>
-							<li>
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="analyticsStrategy3" title="Strategy 3"><i class="fa fa-cube"></i> Strategy 3</a>
 							</li>
 						</ul>
@@ -342,17 +342,20 @@
                     <li class="top-menu-invisible">
 						<a href="#"><i class="fa fa-lg fa-fw fa-search txt-color-greenDark"></i> <span class="menu-item-parent">Research</span></a>
 						<ul>
-							<li class="">
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="reportMethod1" title="Method 1"><i class="fa fa-lg fa-fw fa-gear"></i> <span class="menu-item-parent">Method 1</span></a>
 							</li>
-							<li class="">
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="reportMethod2" title="Method 2"><i class="fa fa-lg fa-fw fa-picture-o"></i> <span class="menu-item-parent">Method 2</span></a>
 							</li>
-							<li>
+							<li ng-class="{active: isActive('/transactions')}">
 								<a ui-sref="reportMethod3" title="Method 3"><i class="fa fa-cube"></i> Method 3</a>
 							</li>
 						</ul>
 					</li>
+                    <li ng-class="{active: isActive('/dictionary')}">
+						<a ui-sref="dictionary"><i class="fa fa-lg fa-fw fa-book txt-color-redLight"></i> <span class="menu-item-parent">Dictionary</span></a>
+                    </li>
 				</ul>
 			</nav>
 
@@ -525,8 +528,12 @@
         <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
         <script src="{% static 'js/app.min.js' %}"></script>
         <script src="{% static 'js/app.js' %}"></script>
-        <script src="{% static 'js/services.js' %}"></script>
         <script src="{% static 'js/controllers/dashboardCtrl.js' %}"></script>
+        <script src="{% static 'js/controllers/navigationCtrl.js' %}"></script>
+        <script src="{% static 'js/controllers/definitionsCtrl.js' %}"></script>
+        <script src="{% static 'js/controllers/financialsCtrl.js' %}"></script>
+        <script src="{% static 'js/services/definitionsService.js' %}"></script>
+        <script src="{% static 'js/services/financialsService.js' %}"></script>
 
         {% block javascript %}{% endblock %}
 

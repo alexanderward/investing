@@ -1,0 +1,2 @@
+python manage.py celeryd -l INFO
+python manage.py celerybeat -l INFO

@@ -533,16 +533,4 @@
          });
 
      }
-
-     // on dom ready
-     listFilter($.chat_users);
-
-     // open chat list
-     $.chat_list_btn.click(function () {
-         $(this).parent('#chat-container').toggleClass('open');
-     })
-
-     $.chat_body.animate({
-         scrollTop: $.chat_body[0].scrollHeight
-     }, 500);
  }

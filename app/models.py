@@ -40,9 +40,12 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    avatar = models.ImageField(upload_to='static/avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='app/static/img/avatars/', null=True, blank=True)
+    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    rh_token = models.CharField(max_length=255, null=True)
 
     objects = UserManager()
 
@@ -51,7 +54,7 @@ class User(AbstractBaseUser):
 
     def get_full_name(self):
         # The user is identified by their email address
-        return self.email
+        return "%s %s" % (self.first_name, self.last_name)
 
     def get_short_name(self):
         # The user is identified by their email address
@@ -75,3 +78,28 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+DEFINITION_CATEGORIES = (
+    ('General', 'General'),
+    ('Penny Stocks', 'Penny Stocks'),
+
+)
+
+
+class Definitions(models.Model):
+    title = models.TextField(null=True, blank=True, unique=True)
+    definition = models.TextField(null=True, blank=True)
+    category = models.CharField(max_length=255, choices=DEFINITION_CATEGORIES)
+
+
+class Financials(models.Model):
+    user = models.ForeignKey(User)
+    available_funds = models.FloatField()
+    funds_held_for_orders = models.FloatField()
+    portfolio_value = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class Positions(models.Model):
+    user = models.ForeignKey(User)

@@ -1,5 +1,5 @@
 
-app.controller('DashboardCtrl', function($scope, AlarmService, $stateParams, $state){
+app.controller('DashboardCtrl', function($scope, $stateParams, $state){
 	demoDashboard();
 });
 
