@@ -72,8 +72,6 @@ class RobinHood(object):
             self.portfolio_link = data.get('portfolio')
             self.positions_link = data.get('positions')
             self.__set_account_balance(data)
-            import pprint
-            pprint.pprint(data)
         elif req.status_code == 401:
             raise NotLoggedIn(req.text)
         else:
@@ -82,7 +80,6 @@ class RobinHood(object):
     def __set_account_balance(self, data):
         self.account_balance_data['funds_held_for_orders'] = data.get('cash_held_for_orders')
         self.account_balance_data['available_funds'] = data.get('buying_power')
-
 
     def get_account_balance(self):
         rebuilt_links = self.rebuilt_links
@@ -101,7 +98,7 @@ class RobinHood(object):
         req = self.__GET(url)
         if req.status_code == 200:
             data = req.json()
-            self.account_balance_data['value'] = data.get('equity')
+            self.account_balance_data['value'] = data.get('equity')  # maybe use extended_hours_equity after hours...
         elif req.status_code == 401:
             raise NotLoggedIn(req.text)
         else:

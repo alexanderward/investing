@@ -5,14 +5,13 @@ from . import views
 partial_patterns = [
     url(r'^dashboard-overview.html$', PartialGroupView.as_view(template_name='partials/dashboard-overview.html'),
         name='home'),
-    url(r'^dashboard-transactions.html$',
-        PartialGroupView.as_view(template_name='partials/dashboard-transactions.html'), name='dashboard_transactions'),
-    url(r'^research-method1.html$', PartialGroupView.as_view(template_name='partials/research-method1.html'),
+    url(r'^research.html$', PartialGroupView.as_view(template_name='partials/research.html'),
         name='research_method1'),
-    url(r'^analytics-strategy1.html$', PartialGroupView.as_view(template_name='partials/analytics-strategy1.html'),
+    url(r'^analysis.html$', PartialGroupView.as_view(template_name='partials/analysis.html'),
         name='analytics_strategy1'),
-    url(r'^dictionary.html$', PartialGroupView.as_view(template_name='partials/dictionary.html'),
-        name='dictionary'),
+    url(r'^dictionary.html$', PartialGroupView.as_view(template_name='partials/dictionary.html'), name='dictionary'),
+    url(r'^links.html$', PartialGroupView.as_view(template_name='partials/links.html'), name='links'),
+    url(r'^notes.html$', PartialGroupView.as_view(template_name='partials/notes.html'), name='notes'),
 ]
 
 urlpatterns = [

@@ -1,6 +1,6 @@
 from rest_framework import mixins
 
-from app.models import Definitions, Financials
+from app.models import Definition, Financial, SymbolHistory, Symbol
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -13,7 +13,7 @@ from rest_framework.renderers import JSONRenderer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 
-from app.serializers import DictionarySerializer, FinancialsSerializer
+from app.serializers import DictionarySerializer, FinancialsSerializer, SymbolHistorySerializer, SymbolSerializer
 
 
 class PartialGroupView(TemplateView):
@@ -25,7 +25,7 @@ class PartialGroupView(TemplateView):
 
 class GenericViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
-        queryset = self.queryset
+        queryset = self.get_queryset()
         if queryset:
             serializer = self.get_serializer(self.paginate_queryset(queryset), many=True)
             return JSONResponse(serializer.data)
@@ -100,9 +100,10 @@ class CurrentFinancials(LoginRequiredMixin, View):
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
-        queryset = Financials.objects.filter(user=request.user).latest('timestamp')
+        queryset = Financial.objects.filter(user=request.user).latest('timestamp')
         serializer = FinancialsSerializer(queryset)
         return JsonResponse(serializer.data)
+
 
 class Index(LoginRequiredMixin, View):
     login_url = 'login.html'
@@ -112,21 +113,16 @@ class Index(LoginRequiredMixin, View):
         context = dict(user={})
         context['user']['email'] = request.user.email
         context['user']['fullname'] = request.user.get_full_name()
-        context['user']['avatar'] = "static" + "/".join(request.user.avatar.url.split('static')[1:])
-
-        from creds import get_robinhood_creds
-        from robinhood import RobinHood
-        rh = RobinHood()
-        username, password = get_robinhood_creds()
-        assert rh.login(username, password)
-        context['user']['funds'] = rh.get_account_balance()
-
+        try:
+            context['user']['avatar'] = "static" + "/".join(request.user.avatar.url.split('static')[1:])
+        except ValueError:
+            context['user']['avatar'] = "static" + "/img/avatars/male.png"
         return render(request, 'index.html', context=context)
 
 
 class DefinitionsViewset(GenericViewSet):
     serializer_class = DictionarySerializer
-    queryset = Definitions.objects.all().order_by('title')
+    queryset = Definition.objects.all().order_by('title')
 
     def __init__(self, **kwargs):
         super(DefinitionsViewset, self).__init__(**kwargs)
@@ -136,6 +132,50 @@ class UserFinancialsViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = FinancialsSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = Financials.objects.filter(user__id=request.user.id)
+        queryset = Financial.objects.filter(user__id=request.user.id)
         serializer = self.serializer_class(queryset, many=True)
+        return JSONResponse(serializer.data)
+
+
+class SymbolViewset(GenericViewSet):
+    serializer_class = SymbolSerializer
+    queryset = Symbol.objects.all().order_by('symbol')
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        queryset = self.queryset
+        if pk:
+            if not pk.isdigit():
+                queryset = queryset.filter(symbol=pk)
+            else:
+                queryset = queryset.filter(pk=pk)
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset:
+            raise Http404
+
+        serializer = self.serializer_class(self.paginate_queryset(queryset))
+        return JSONResponse(serializer.data)
+
+
+class SymbolHistoryViewset(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    serializer_class = SymbolHistorySerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        queryset = SymbolHistory.objects.all()
+        if not pk.isdigit():
+            queryset = queryset.filter(symbol__symbol=pk)
+        else:
+            queryset = queryset.filter(pk=pk)
+        return queryset.order_by('-date')
+
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset:
+            raise Http404
+
+        serializer = self.serializer_class(self.paginate_queryset(queryset), many=True)
         return JSONResponse(serializer.data)

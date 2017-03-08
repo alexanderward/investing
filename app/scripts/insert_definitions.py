@@ -3,11 +3,11 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "investing.settings")
 import django
 django.setup()
-from app.models import Definitions
+from app.models import Definition
 
 definitions = json.load(file('definitions/initial.json'))
-Definitions.objects.all().delete()
+Definition.objects.all().delete()
 definitions = [x.get('fields') for x in definitions]
 for definition in definitions:
-    Definitions.objects.create(title=definition.get('title'), definition=definition.get('definition'), category='General')
+    Definition.objects.create(title=definition.get('title'), definition=definition.get('definition'), category='General')
 

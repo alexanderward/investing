@@ -4,8 +4,8 @@ app.controller('FinancialsCtrl', function($scope, $location, FinancialsService) 
         available_funds: null,
         funds_held_for_orders: null
     };
-    $scope.dailyChange = '25';
-    $scope.totalChange = '5';
+    $scope.dailyChange = null;
+    $scope.totalChange = null;
     FinancialsService.getCurrentFinancials()
         .then(function(data) {
                 $scope.currentFinancials = data;

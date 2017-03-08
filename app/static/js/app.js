@@ -11,58 +11,18 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                     notification: null
                 }
             })
-            .state('dashboardTransactions', {
-                
-                templateUrl: '/partials/dashboard-transactions.html',
-                controller: 'DashboardTransactionsCtrl',
+            .state('analysis', {
+                url: '/analysis',
+                templateUrl: '/partials/analysis.html',
+                controller: 'AnalysisCtrl',
                 params: {
                     notification: null
                 }
             })
-            .state('analyticsStrategy1', {
-                
-                templateUrl: '/partials/analytics-strategy1.html',
-                controller: 'DashboardTransactionsCtrl',
-                params: {
-                    notification: null
-                }
-            })
-            .state('analyticsStrategy2', {
-                
-                templateUrl: '/partials/analytics-strategy1.html',
-                controller: 'DashboardTransactionsCtrl',
-                params: {
-                    notification: null
-                }
-            })
-            .state('analyticsStrategy3', {
-                
-                templateUrl: '/partials/analytics-strategy1.html',
-                controller: 'DashboardTransactionsCtrl',
-                params: {
-                    notification: null
-                }
-            })
-            .state('reportMethod1', {
-                
-                templateUrl: '/partials/research-method1.html',
-                controller: 'DashboardTransactionsCtrl',
-                params: {
-                    notification: null
-                }
-            })
-            .state('reportMethod2', {
-                
-                templateUrl: '/partials/research-method1.html',
-                controller: 'DashboardTransactionsCtrl',
-                params: {
-                    notification: null
-                }
-            })
-            .state('reportMethod3', {
-
-                templateUrl: '/partials/research-method1.html',
-                controller: 'DashboardTransactionsCtrl',
+            .state('research', {
+                url: '/research',
+                templateUrl: '/partials/research.html',
+                controller: 'ResearchCtrl',
                 params: {
                     notification: null
                 }
@@ -74,5 +34,23 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                 params: {
                     notification: null
                 }
-            });
+            })
+            .state('notes', {
+                url: '/notes',
+                templateUrl: '/partials/notes.html',
+                controller: 'NotesCtrl',
+                params: {
+                    notification: null
+                }
+            })
+            .state('links', {
+                url: '/links',
+                templateUrl: '/partials/links.html',
+                controller: 'LinksCtrl',
+                params: {
+                    notification: null
+                }
+            })
+
+        ;
     }]);

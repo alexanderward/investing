@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from app.models import User
-from app.models import Definitions
+from app.models import Definition
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -87,7 +87,7 @@ class DefinitionAdmin(admin.ModelAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
-admin.site.register(Definitions, DefinitionAdmin)
+admin.site.register(Definition, DefinitionAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

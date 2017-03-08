@@ -1,0 +1,11 @@
+implement task to look through all stock tickers to identify most stable projected growth and present in a table
+    - run once a day to update current year's growth
+    - check to see if stock exists in db, if not get past 5 years; else update current year
+
+
+Dashboard
+    - Weekly/Monthly/Annual
+        - IPO
+        - Newly Listed
+        - Newly removed from listings
+        - Other Announcements

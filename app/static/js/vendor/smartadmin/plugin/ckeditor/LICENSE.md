@@ -798,7 +798,7 @@ Appendix C: The MPL License
 MOZILLA PUBLIC LICENSE
 Version 1.1
 
-1. Definitions.
+1. Definition.
 
      1.0.1. "Commercial Use" means distribution or otherwise making the
      Covered Code available to a third party.

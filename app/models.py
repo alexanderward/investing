@@ -64,42 +64,102 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
+        """Does the user have a specific permission?"""
         # Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
+        """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
         return True
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
+        """Is the user a member of staff?"""
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
 
-DEFINITION_CATEGORIES = (
-    ('General', 'General'),
-    ('Penny Stocks', 'Penny Stocks'),
-
-)
-
-
-class Definitions(models.Model):
+class Definition(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.TextField(null=True, blank=True, unique=True)
     definition = models.TextField(null=True, blank=True)
-    category = models.CharField(max_length=255, choices=DEFINITION_CATEGORIES)
 
 
-class Financials(models.Model):
-    user = models.ForeignKey(User)
+class Financial(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     available_funds = models.FloatField()
     funds_held_for_orders = models.FloatField()
     portfolio_value = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
-class Positions(models.Model):
+class Symbol(models.Model):
+    # https://api.robinhood.com/instruments/09bc1a2d-534d-49d4-add7-e0eb3be8e640/
+    symbol = models.CharField(max_length=15, unique=True, db_index=True)
+    company = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)  # https://api.robinhood.com/fundamentals/LUV/
+    sector = models.CharField(max_length=255, blank=True, null=True)
+    industry = models.CharField(max_length=255, blank=True, null=True)
+    ipo_year = models.IntegerField(null=True, blank=True)
+    market_cap = models.FloatField(null=True, blank=True)
+    listed = models.BooleanField(default=True)
+    growth_rate = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return self.symbol
+
+
+class SymbolHistory(models.Model):
+    symbol = models.ForeignKey(Symbol, on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)
+    open = models.FloatField(null=True, blank=True)
+    high = models.FloatField(null=True, blank=True)
+    low = models.FloatField(null=True, blank=True)
+    close = models.FloatField(null=True, blank=True)
+    volume = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.symbol.symbol
+
+
+class Position(models.Model):
     user = models.ForeignKey(User)
+    # todo
+
+
+class NoteTypes(models.Model):
+    name = models.CharField(max_length=255)
+    codename = models.CharField(max_length=255)
+
+
+class Note(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    note_type = models.ForeignKey(NoteTypes, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
+
+
+class Link(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    url = models.URLField()
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField()
+    link = models.ForeignKey(Link, on_delete=models.CASCADE)
+
+
+class Tag(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    notes = models.ManyToManyField(Note, related_name='tags', blank=True)
+    definitions = models.ManyToManyField(Definition, related_name='tags', blank=True)
+    positions = models.ManyToManyField(Position, related_name='tags', blank=True)
+    links = models.ManyToManyField(Link, related_name='tags', blank=True)
+
+    # Definition.objects.filter(tags__name="your_tag_name")
+    # Notes.objects.item_set.all() - returns all tags for the notes
