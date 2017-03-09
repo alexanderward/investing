@@ -54,6 +54,7 @@ def get_listed_stocks():
         symbol.listed = False
         symbol.save()
 
+
 def calculate_growth_rate(old_value, new_value, years=5):
     old_value = float(old_value)
     new_value = float(new_value)
@@ -61,6 +62,7 @@ def calculate_growth_rate(old_value, new_value, years=5):
     ratio = new_value / old_value
     growth_rate = ratio ** (1 / years)
     return float((growth_rate - 1) * 100)
+
 
 # symbols = Symbol.objects.all()
 # now = datetime.datetime.now()
@@ -107,18 +109,18 @@ def calculate_growth_rate(old_value, new_value, years=5):
 
 
 sectors = ['Transportation',
- 'Health Care',
- 'Basic Industries',
- 'Energy',
- 'Public Utilities',
- 'Consumer Services',
- 'Consumer Non-Durables',
- 'Technology',
- 'Capital Goods',
- 'Consumer Durables',
- 'Miscellaneous',
- 'Finance',
- 'n/a']
+           'Health Care',
+           'Basic Industries',
+           'Energy',
+           'Public Utilities',
+           'Consumer Services',
+           'Consumer Non-Durables',
+           'Technology',
+           'Capital Goods',
+           'Consumer Durables',
+           'Miscellaneous',
+           'Finance',
+           'n/a']
 
 # for sector in sectors:
 #     top_five = Symbol.objects.filter(growth_rate__isnull=False, sector=sector).order_by('-growth_rate')[:5]
@@ -146,34 +148,34 @@ for symbol in symbols:
         symbol.growth_rate = None
         symbol.save()
 
-# get_listed_stocks()
-# symbols = Symbol.objects.all()
-# now = datetime.datetime.now()
-# now_minus_five_years = datetime.datetime(year=now.year - 5, month=now.month, day=now.day)
-#
-# for symbol in symbols:
-#     # Super lazy method ... just drop and write everyday
-#     try:
-#         historic_data = get_historic(symbol.symbol, now_minus_five_years)
-#         if historic_data:
-#             SymbolHistory.objects.filter(symbol=symbol).delete()
-#
-#         symbol_history_list = []
-#         for day in historic_data:
-#             symbol_history_list.append(SymbolHistory(
-#                 symbol=symbol,
-#                 date=datetime.datetime.strptime(day[0], '%d-%b-%y'),
-#                 open=None if '-' in day[1] else day[1],
-#                 high=None if '-' in day[2] else day[2],
-#                 low=None if '-' in day[3] else day[3],
-#                 close=None if '-' in day[4] else day[4],
-#                 volume=None if '-' in day[5] else day[5]
-#             ))
-#         SymbolHistory.objects.bulk_create(symbol_history_list)
-#         first_symbol = SymbolHistory.objects.filter(symbol=symbol, close__isnull=False, close__gt=0).order_by('date').first()
-#         if first_symbol:
-#             last_symbol = SymbolHistory.objects.filter(symbol=symbol, close__isnull=False, close__gt=0).order_by('date').last()
-#             symbol.growth_rate = calculate_growth_rate(first_symbol.close, last_symbol.close)
-#             symbol.save()
-#     except AssertionError:
-#         pass
+        # get_listed_stocks()
+        # symbols = Symbol.objects.all()
+        # now = datetime.datetime.now()
+        # now_minus_five_years = datetime.datetime(year=now.year - 5, month=now.month, day=now.day)
+        #
+        # for symbol in symbols:
+        #     # Super lazy method ... just drop and write everyday
+        #     try:
+        #         historic_data = get_historic(symbol.symbol, now_minus_five_years)
+        #         if historic_data:
+        #             SymbolHistory.objects.filter(symbol=symbol).delete()
+        #
+        #         symbol_history_list = []
+        #         for day in historic_data:
+        #             symbol_history_list.append(SymbolHistory(
+        #                 symbol=symbol,
+        #                 date=datetime.datetime.strptime(day[0], '%d-%b-%y'),
+        #                 open=None if '-' in day[1] else day[1],
+        #                 high=None if '-' in day[2] else day[2],
+        #                 low=None if '-' in day[3] else day[3],
+        #                 close=None if '-' in day[4] else day[4],
+        #                 volume=None if '-' in day[5] else day[5]
+        #             ))
+        #         SymbolHistory.objects.bulk_create(symbol_history_list)
+        #         first_symbol = SymbolHistory.objects.filter(symbol=symbol, close__isnull=False, close__gt=0).order_by('date').first()
+        #         if first_symbol:
+        #             last_symbol = SymbolHistory.objects.filter(symbol=symbol, close__isnull=False, close__gt=0).order_by('date').last()
+        #             symbol.growth_rate = calculate_growth_rate(first_symbol.close, last_symbol.close)
+        #             symbol.save()
+        #     except AssertionError:
+        #         pass

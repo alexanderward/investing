@@ -19,6 +19,9 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/smartadmin/smartadmin-production.min.css' %}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/smartadmin/smartadmin-skins.min.css' %}">
 
+
+		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/nvd3/nv.d3.min.css' %}">
+
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/base.css' %}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/configure.css' %}">
         {% block css %}
@@ -295,6 +298,13 @@
         <script src="{% static 'js/vendor/angularjs/angular-ui-router.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ui-bootstrap-tpls-2.4.0.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
+
+        <script src="{% static 'js/vendor/d3/d3.min.js' %}"></script>
+        <script src="{% static 'js/vendor/nvd3/nv.d3.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angular-nvd3/angular-nvd3.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
+
         <script src="{% static 'js/app.min.js' %}"></script>
         <script src="{% static 'js/app.js' %}"></script>
         <script src="{% static 'js/controllers/dashboardCtrl.js' %}"></script>
@@ -306,8 +316,17 @@
         <script src="{% static 'js/controllers/linksCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/notesCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/financialsCtrl.js' %}"></script>
+
+        <script src="{% static 'js/controllers/graphs/stackedAreaChart.js' %}"></script>
+        <script src="{% static 'js/controllers/graphs/multiBarHorizontalChart.js' %}"></script>
+        <script src="{% static 'js/controllers/graphs/discreteBarChart.js' %}"></script>
+
         <script src="{% static 'js/services/definitionsService.js' %}"></script>
         <script src="{% static 'js/services/financialsService.js' %}"></script>
+        <script src="{% static 'js/services/symbolService.js' %}"></script>
+
+
+
 
         {% block javascript %}{% endblock %}
 

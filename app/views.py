@@ -1,5 +1,10 @@
+import django_filters
+from django.conf import settings
 from rest_framework import mixins
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
+from app.filters import SymbolFilter, SymbolHistoryFilter
 from app.models import Definition, Financial, SymbolHistory, Symbol
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -13,6 +18,7 @@ from rest_framework.renderers import JSONRenderer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 
+from app.pagination import CountPagination
 from app.serializers import DictionarySerializer, FinancialsSerializer, SymbolHistorySerializer, SymbolSerializer
 
 
@@ -25,7 +31,7 @@ class PartialGroupView(TemplateView):
 
 class GenericViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         if queryset:
             serializer = self.get_serializer(self.paginate_queryset(queryset), many=True)
             return JSONResponse(serializer.data)
@@ -100,9 +106,12 @@ class CurrentFinancials(LoginRequiredMixin, View):
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
-        queryset = Financial.objects.filter(user=request.user).latest('timestamp')
-        serializer = FinancialsSerializer(queryset)
-        return JsonResponse(serializer.data)
+        try:
+            queryset = Financial.objects.filter(user=request.user).latest('timestamp')
+            serializer = FinancialsSerializer(queryset)
+            return JsonResponse(serializer.data)
+        except Financial.DoesNotExist:
+            return JSONResponse([])
 
 
 class Index(LoginRequiredMixin, View):
@@ -140,32 +149,34 @@ class UserFinancialsViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
 class SymbolViewset(GenericViewSet):
     serializer_class = SymbolSerializer
     queryset = Symbol.objects.all().order_by('symbol')
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        queryset = self.queryset
-        if pk:
-            if not pk.isdigit():
-                queryset = queryset.filter(symbol=pk)
-            else:
-                queryset = queryset.filter(pk=pk)
-        return queryset
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    filter_class = SymbolFilter
+    ordering_fields = ('growth_rate',)
 
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        pk = self.kwargs.get('pk')
+        if not pk.isdigit():
+            queryset = queryset.filter(symbol=pk)
+        else:
+            queryset = queryset.filter(pk=pk)
+
         if not queryset:
             raise Http404
 
-        serializer = self.serializer_class(self.paginate_queryset(queryset))
+        serializer = self.serializer_class(queryset.first())
         return JSONResponse(serializer.data)
 
 
 class SymbolHistoryViewset(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = SymbolHistorySerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filter_class = SymbolHistoryFilter
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         queryset = SymbolHistory.objects.all()
+        queryset = queryset.select_related('symbol')
         if not pk.isdigit():
             queryset = queryset.filter(symbol__symbol=pk)
         else:
@@ -176,6 +187,6 @@ class SymbolHistoryViewset(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         queryset = self.get_queryset()
         if not queryset:
             raise Http404
-
+        queryset = self.filter_queryset(queryset)
         serializer = self.serializer_class(self.paginate_queryset(queryset), many=True)
         return JSONResponse(serializer.data)

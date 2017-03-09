@@ -22,12 +22,12 @@ from app.views import DefinitionsViewset, UserFinancialsViewset, SymbolHistoryVi
 router = routers.DefaultRouter()
 router.register(r'definitions', DefinitionsViewset, base_name='Definition')
 router.register(r'symbols', SymbolViewset, base_name='Symbol')
-router.register(r'symbol_history', SymbolHistoryViewset, base_name='SymbolHistory')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
     url(r'^api/financials/', UserFinancialsViewset.as_view({'get': 'list'})),
+    url(r'^api/symbols/(?P<pk>\w+)/history/$', SymbolHistoryViewset.as_view({'get': 'retrieve'})),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('app.urls', namespace='app')),
 ]
