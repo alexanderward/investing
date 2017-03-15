@@ -1,9 +1,10 @@
-from services import IChart, NASDAQ, Google
+from services import IChart, NASDAQ, Google, YahooFinance
 from itertools import chain
 
 
-def get_gain_metrics(daily=False, weekly=False, monthly=False, annually=True):
-    pass
+def get_stock_statistics(symbol):
+    yahoo = YahooFinance()
+    return yahoo.get_statistics(symbol)
 
 
 def get_historic(symbol, from_date):
@@ -18,11 +19,14 @@ def get_listed_companies():
     return nasdaq_api.get_nasdaq_companies()
     # return chain(nasdaq_api.get_nasdaq_companies(), nasdaq_api.get_nyse_companies())
 
-# import datetime
-# now = datetime.datetime.now()
-# now_minus_five_years = datetime.datetime(year=now.year - 5, month=now.month, day=now.day)
-# for x in get_historic('SAB', now_minus_five_years):
-#     print x
-#
-# for x in get_listed_companies():
-#     print x
+    # import datetime
+    # now = datetime.datetime.now()
+    # now_minus_five_years = datetime.datetime(year=now.year - 5, month=now.month, day=now.day)
+    # for x in get_historic('SAB', now_minus_five_years):
+    #     print x
+    #
+    # for x in get_listed_companies():
+    #     print x
+
+
+print get_stock_statistics('ATVI')

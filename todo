@@ -9,3 +9,11 @@ Dashboard
         - Newly Listed
         - Newly removed from listings
         - Other Announcements
+    - Sectors trending
+        - Daily changes in Sectors
+        - Compare stocks averages (PEM, etc to their sector's average)
+
+
+Symbol View
+    - Show all integrated Yahoo data
+    - Have comments cached after load with a force update option (otherwise it updates daily)

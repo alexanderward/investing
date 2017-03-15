@@ -1,3 +1,4 @@
+import re
 import urllib
 
 import requests
@@ -24,6 +25,7 @@ class Source(object):
     @url.setter
     def url(self, url_):
         self.__url = url_
+        self.__parameters = {}
 
     @property
     def delimeter(self):
@@ -48,12 +50,19 @@ class Source(object):
             url = url + '?' + self.parameters
         req = requests.get(url)
         assert req.status_code == 200
-        if req.headers.get('Content-Type') in ['text/csv', 'application/text', 'application/vnd.ms-excel']:
+        content_type = req.headers.get('Content-Type', "")
+        if content_type in ['text/csv', 'application/text', 'application/vnd.ms-excel']:
             return JankyCSV(req.content).get_rows(self.delimeter)
+        elif 'application/json' in content_type:
+            return req.json()
         return req.content
 
 
 class Google(Source):
+    """
+    Get's Historic data from Google
+    """
+
     def __init__(self):
         super(Google, self).__init__()
         self.url = "https://www.google.com/finance/historical"
@@ -87,6 +96,10 @@ class IChart(Source):
 
 
 class NASDAQ(Source):
+    """
+    Gets a list of all stocks listed on the NASDAQ
+    """
+
     def __init__(self):
         super(NASDAQ, self).__init__()
         self.url = "http://www.nasdaq.com/screening/companies-by-industry.aspx"
@@ -99,3 +112,50 @@ class NASDAQ(Source):
     def get_nyse_companies(self):
         self.update_parameters({'exchange': 'NYSE', 'render': 'download'})
         return self.get_data()
+
+
+class YahooFinance(Source):
+    """
+    Get's the Stock's statistics from Yahoo
+    https://finance.yahoo.com/quote/ATVI/key-statistics?p=ATVI <- Explained results for the most part
+    """
+
+    def __init__(self):
+        super(YahooFinance, self).__init__()
+
+    def get_statistics(self, symbol):
+        url = "https://query1.finance.yahoo.com/v10/finance/quoteSummary/"
+        self.url = "%s%s" % (url, symbol)
+        self.update_parameters({
+                                   'modules': 'defaultKeyStatistics,financialData,calendarEvents,assetProfile,'
+                                              'secFilings,incomeStatementHistory,cashflowStatementHistory,'
+                                              'balanceSheetHistory,incomeStatementHistoryQuarterly, '
+                                              'cashflowStatementHistoryQuarterly,balanceSheetHistoryQuarterly,earnings,'
+                                              'institutionOwnership,fundOwnership,majorDirectHolders,'
+                                              'majorHoldersBreakdown,insiderTransactions,insiderHolders,'
+                                              'netSharePurchaseActivity,summaryProfile,'
+                                              'recommendationTrend,upgradeDowngradeHistory'})
+        data = self.get_data()
+        return data
+
+    def get_news(self, symbol):
+        self.url = "https://query2.finance.yahoo.com/v2/finance/news"
+        self.update_parameters({'lang': 'en-US', 'region': 'US', 'symbols': symbol})
+        data = self.get_data()
+        return data
+
+    def get_comments(self, symbol):
+        self.url = "https://finance.yahoo.com/quote/%s/community?p=%s" % (symbol, symbol)
+        data = self.get_data()
+        context_ids = re.findall("messageBoardId\":\"(.*?)\"", data)
+        results = []
+        for context_id in context_ids:
+            self.url = "https://finance.yahoo.com/_finance_doubledown/api/resource/canvass.getMessageListForContext_ns" \
+                       ";context=%s;count=20;index=null;lang=en-US;namespace=yahoo_finance;oauthConsumerKey" \
+                       "=finance.oauth.client.canvass.prod.consumerKey;oauthConsumerSecret=finance.oauth.client.canvass" \
+                       ".prod.consumerSecret;region=US;sortBy=popular;type=null" % context_id
+            data = self.get_data()
+            results.append(data)
+        return results
+
+# print YahooFinance().get_comments('ATVI')
