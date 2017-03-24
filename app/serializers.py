@@ -1,5 +1,40 @@
+from copy import deepcopy
+
 from rest_framework import serializers
 from app.models import Definition, Financial, User, SymbolHistory, Symbol
+
+
+class UserProfileSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        raise NotImplemented()
+
+    def update(self, instance, validated_data):
+        if 'notifications' in validated_data.keys():
+            notifications = validated_data.pop('notifications', None)
+            validated_data['notification_email'] = notifications['email']
+            validated_data['notification_sms'] = notifications['sms']
+
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+        instance.save(update_fields=validated_data.keys())
+        return instance
+
+    email = serializers.EmailField(required=False)
+    phone = serializers.CharField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    rh_token = serializers.CharField(required=False)
+    notifications = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def get_notifications(self, obj):
+        return {
+            'email': obj.notification_email,
+            'sms': obj.notification_sms
+        }
 
 
 class DictionarySerializer(serializers.Serializer):

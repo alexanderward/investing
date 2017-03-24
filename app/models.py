@@ -40,12 +40,17 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    phone = models.CharField(max_length=15, null=True)
+
     avatar = models.ImageField(upload_to='app/static/img/avatars/', null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     rh_token = models.CharField(max_length=255, null=True)
+
+    notification_email = models.BooleanField(default=False)
+    notification_sms = models.BooleanField(default=False)
 
     objects = UserManager()
 
@@ -105,6 +110,13 @@ class Symbol(models.Model):
     market_cap = models.FloatField(null=True, blank=True)
     listed = models.BooleanField(default=True)
     growth_rate = models.FloatField(null=True, blank=True)
+
+    moving_average = models.FloatField(null=True, blank=True)
+    average_volume = models.FloatField(null=True, blank=True)
+
+    current_price = models.FloatField(null=True, blank=True)
+    last_close = models.FloatField(null=True, blank=True)
+    last_open = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.symbol

@@ -3,6 +3,8 @@ from django.conf.urls import include, url
 from . import views
 
 partial_patterns = [
+    url(r'^profile.html$', PartialGroupView.as_view(template_name='partials/profile.html'),
+        name='profile'),
     url(r'^dashboard-overview.html$', PartialGroupView.as_view(template_name='partials/dashboard-overview.html'),
         name='home'),
     url(r'^research.html$', PartialGroupView.as_view(template_name='partials/research.html'),
@@ -12,6 +14,9 @@ partial_patterns = [
     url(r'^dictionary.html$', PartialGroupView.as_view(template_name='partials/dictionary.html'), name='dictionary'),
     url(r'^links.html$', PartialGroupView.as_view(template_name='partials/links.html'), name='links'),
     url(r'^notes.html$', PartialGroupView.as_view(template_name='partials/notes.html'), name='notes'),
+    # url(r'^context-menus/message.html$', PartialGroupView.as_view(template_name='partials/context-menus/message.html'), name='message'),
+    # url(r'^context-menus/subject.html$', PartialGroupView.as_view(template_name='partials/context-menus/subject.html'), name='subject'),
+    # url(r'^context-menus/welcome.html$', PartialGroupView.as_view(template_name='partials/context-menus/welcome.html'), name='welcome'),
 ]
 
 urlpatterns = [

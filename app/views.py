@@ -5,7 +5,7 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from app.filters import SymbolFilter, SymbolHistoryFilter
-from app.models import Definition, Financial, SymbolHistory, Symbol
+from app.models import Definition, Financial, SymbolHistory, Symbol, User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -19,7 +19,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 
 from app.pagination import CountPagination
-from app.serializers import DictionarySerializer, FinancialsSerializer, SymbolHistorySerializer, SymbolSerializer
+from app.serializers import DictionarySerializer, FinancialsSerializer, SymbolHistorySerializer, SymbolSerializer, \
+    UserProfileSerializer
 
 
 class PartialGroupView(TemplateView):
@@ -135,6 +136,25 @@ class DefinitionsViewset(GenericViewSet):
 
     def __init__(self, **kwargs):
         super(DefinitionsViewset, self).__init__(**kwargs)
+
+
+class UserProfileViewset(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    serializer_class = UserProfileSerializer
+
+    def get_profile(self, request, *args, **kwargs):
+        queryset = User.objects.get(id=request.user.id)
+        serializer = self.serializer_class(queryset)
+        return JSONResponse(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            instance = User.objects.get(id=request.user.id)
+            instance = serializer.update(instance=instance, validated_data=data)
+            return JSONResponse(self.serializer_class(instance).data)
+
+        raise ValidationError("Invalid data")
 
 
 class UserFinancialsViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
