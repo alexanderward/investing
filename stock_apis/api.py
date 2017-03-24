@@ -1,3 +1,5 @@
+import json
+
 from services import IChart, NASDAQ, Google, YahooFinance
 from itertools import chain
 
@@ -5,6 +7,16 @@ from itertools import chain
 def get_stock_statistics(symbol):
     yahoo = YahooFinance()
     return yahoo.get_statistics(symbol)
+
+
+def get_news(symbol):
+    yahoo = YahooFinance()
+    return yahoo.get_news(symbol)
+
+
+def get_comments(symbol):
+    yahoo = YahooFinance()
+    return yahoo.get_comments(symbol)
 
 
 def get_historic(symbol, from_date):
@@ -29,4 +41,8 @@ def get_listed_companies():
     #     print x
 
 
-print get_stock_statistics('ATVI')
+# data = get_stock_statistics('ATVI'); filename='stats.json'
+# # data = get_comments('ATVI'); filename='comments.json'
+# # data = get_news('ATVI'); filename='news.json'
+# with open(filename, 'w') as f:
+#     json.dump(data, f, indent=4, sort_keys=True)

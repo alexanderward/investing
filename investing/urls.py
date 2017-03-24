@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 
-from app.views import DefinitionsViewset, UserFinancialsViewset, SymbolHistoryViewset, SymbolViewset
+from app.views import DefinitionsViewset, UserFinancialsViewset, SymbolHistoryViewset, SymbolViewset, UserProfileViewset
 
 router = routers.DefaultRouter()
 router.register(r'definitions', DefinitionsViewset, base_name='Definition')
@@ -26,6 +26,7 @@ router.register(r'symbols', SymbolViewset, base_name='Symbol')
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
+    url(r'^api/profile/', UserProfileViewset.as_view({'get': 'get_profile', 'put': 'update'})),
     url(r'^api/financials/', UserFinancialsViewset.as_view({'get': 'list'})),
     url(r'^api/symbols/(?P<pk>\w+)/history/$', SymbolHistoryViewset.as_view({'get': 'retrieve'})),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

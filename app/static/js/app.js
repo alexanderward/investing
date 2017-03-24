@@ -1,8 +1,16 @@
 'use strict';
-var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap', 'nvd3'])
+var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap', 'nvd3', 'ui.bootstrap.contextMenu'])
     .config(['$urlRouterProvider','$stateProvider', function($urlRouterProvider, $stateProvider) {
         $urlRouterProvider.otherwise('/');
         $stateProvider
+            .state('profile', {
+                url: '/profile',
+                templateUrl: '/partials/profile.html',
+                controller: 'ProfileCtrl',
+                params: {
+                    notification: null
+                }
+            })
             .state('dashboardOverview', {
                 url: '/',
                 templateUrl: '/partials/dashboard-overview.html',
@@ -54,3 +62,8 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
 
         ;
     }]);
+
+app.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+}]);

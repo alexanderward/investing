@@ -1,6 +1,8 @@
+# import os
+#
+# import datetime
 import os
 
-import datetime
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -13,10 +15,41 @@ import django
 django.setup()
 from app.models import Symbol, SymbolHistory
 
+from afinn import Afinn
 
 
+# afinn = Afinn()
+# # text = requests.get("http://finance.yahoo.com/news/videogame-stock-roundup-nintendos-switch-204508012.html")
+# # text = requests.get("http://us.rd.yahoo.com/finance/SIG=12q80ki1p/*http%3A//www.fool.com/investing/2017/03/09/3-tech-stocks-to-buy-in-march.aspx?yptr=yahoo")
+# # print afinn.score(text.content)
+# text = r"""
+# Sell this stock now.  Analysts predict steep losses.
+# """
+# print afinn.score(text)
 
-#
+
+def get_average_percent_change(symbol, day_count=100):
+    historic_days = SymbolHistory.objects.filter(symbol=symbol).order_by('date')[:day_count]
+    percent_changes = []
+    for historic_day in enumerate(historic_days):
+        index, day = historic_day
+        if not day.close or not day.open:
+            continue
+        percent_change = abs(float(day.close - day.open) / float(day.close) * 100)
+        percent_changes.append(percent_change)
+
+    if not percent_changes:
+        return None
+    return sum(percent_changes) / len(percent_changes)
+
+
+symbols = Symbol.objects.all()
+for symbol in symbols:
+    print symbol.symbol, get_average_percent_change(symbol, day_count=20)
+
+
+print get_average_percent_change(Symbol.objects.get(symbol='TINY'), day_count=20)
+
 # def get_listed_stocks():
 #     companies = get_listed_companies()
 #

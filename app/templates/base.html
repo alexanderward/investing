@@ -82,13 +82,13 @@
 		<!-- END HEADER -->
 
 		<!-- #NAVIGATION -->
-		<aside id="left-panel">
+		<aside id="left-panel" ng-controller="NavCtrl">
 
 			<!-- User info -->
 			<div class="login-info">
 				<span> <!-- User image size is adjusted inside CSS, it should stay as it -->
 
-					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+					<a ui-sref="profile" ng-class="{active: isActive('/profile')}">
 						<img src="{{ user.avatar }}" alt="me" class="online" />
 						<span>
 							{{ user.fullname }}
@@ -100,7 +100,7 @@
 			</div>
 			<!-- end user info -->
 
-			<nav ng-controller="NavCtrl">
+			<nav>
 				<!--
 				NOTE: Notice the gaps after each icon usage <i></i>..
 				Please note that these links work a bit different than
@@ -298,6 +298,7 @@
         <script src="{% static 'js/vendor/angularjs/angular-ui-router.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ui-bootstrap-tpls-2.4.0.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
+        <script src="{% static 'js/vendor/contextMenu.js' %}"></script>
 
         <script src="{% static 'js/vendor/d3/d3.min.js' %}"></script>
         <script src="{% static 'js/vendor/nvd3/nv.d3.min.js' %}"></script>
@@ -307,6 +308,9 @@
 
         <script src="{% static 'js/app.min.js' %}"></script>
         <script src="{% static 'js/app.js' %}"></script>
+
+        <script src="{% static 'js/utils.js' %}"></script>
+
         <script src="{% static 'js/controllers/dashboardCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/navigationCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/breadcrumbCtrl.js' %}"></script>
@@ -316,14 +320,24 @@
         <script src="{% static 'js/controllers/linksCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/notesCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/financialsCtrl.js' %}"></script>
+        <script src="{% static 'js/controllers/profileCtrl.js' %}"></script>
 
         <script src="{% static 'js/controllers/graphs/stackedAreaChart.js' %}"></script>
         <script src="{% static 'js/controllers/graphs/multiBarHorizontalChart.js' %}"></script>
         <script src="{% static 'js/controllers/graphs/discreteBarChart.js' %}"></script>
+        <script src="{% static 'js/controllers/graphs/pieChart.js' %}"></script>
 
         <script src="{% static 'js/services/definitionsService.js' %}"></script>
         <script src="{% static 'js/services/financialsService.js' %}"></script>
         <script src="{% static 'js/services/symbolService.js' %}"></script>
+        <script src="{% static 'js/services/dashboardService.js' %}"></script>
+        <script src="{% static 'js/services/profileService.js' %}"></script>
+
+
+        <script src="{% static 'js/directives/graphs.js' %}"></script>
+
+
+
 
 
 

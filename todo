@@ -12,8 +12,10 @@ Dashboard
     - Sectors trending
         - Daily changes in Sectors
         - Compare stocks averages (PEM, etc to their sector's average)
+    - Pie Chart (Show diversification)
 
 
 Symbol View
     - Show all integrated Yahoo data
     - Have comments cached after load with a force update option (otherwise it updates daily)
+

@@ -1,6 +1,7 @@
 app.controller('BreadcrumbCtrl', function($scope, $location) {
     var lookupTable = {
         '/': 'Dashboard',
+        '/profile': 'Profile',
         '/analysis': 'Analysis',
         '/research': 'Research',
         '/dictionary': 'Dictionary',

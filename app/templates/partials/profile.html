@@ -1,0 +1,236 @@
+{% verbatim %}
+    <article class="col-sm-12 col-md-12 col-lg-12" style="height:100%" ng-controller="ProfileCtrl" ng-cloak>
+        <div class="jarviswidget" id="wid-id-5" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false" role="widget">
+            <header role="heading">
+                <div class="jarviswidget-ctrls" role="menu"></div>
+                <h2>Profile Settings</h2>
+            </header>
+
+            <!-- widget div-->
+            <div role="content">
+
+                <!-- widget edit box -->
+                <div class="jarviswidget-editbox">
+                    <!-- This area used as dropdown edit box -->
+
+                </div>
+                <!-- end widget edit box -->
+
+                <!-- widget content -->
+                <div class="widget-body">
+
+                    <div class="tabs-left">
+                        <ul class="nav nav-tabs tabs-left" id="demo-pill-nav">
+                            <li class="active">
+                                <a href="#basic-info" target="_self" data-toggle="tab" aria-expanded="true"><i class="fa fa-lg fa-fw fa-user txt-color-blueDark"></i><strong><span> Basic Info</span></strong></a>
+                            </li>
+                            <li class="">
+                                <a href="#notification-settings" target="_self" data-toggle="tab" aria-expanded="false"><i class="fa fa-lg fa-fw fa-envelope txt-color-orangeDark"></i><strong><span> Notification Settings</span></strong></a>
+                            </li>
+                            <li class="">
+                                <a href="#tab-robinhood" target="_self" data-toggle="tab" aria-expanded="false"><i class="fa fa-lg fa-fw fa-money txt-color-greenDark"></i><strong><span> RobinHood Settings</span></strong></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="basic-info">
+                                <article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+                                    <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
+
+                                        <header role="heading"><div class="jarviswidget-ctrls" role="menu">
+
+                                        </div>
+                                            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                                            <h2>Basic Information </h2>
+
+                                        </header>
+
+                                        <!-- widget div-->
+                                        <div role="content">
+
+                                            <!-- widget edit box -->
+                                            <div class="jarviswidget-editbox">
+                                                <!-- This area used as dropdown edit box -->
+
+                                            </div>
+                                            <!-- end widget edit box -->
+
+                                            <!-- widget content -->
+                                            <div class="widget-body no-padding">
+
+                                                <form id="checkout-form" class="smart-form" novalidate="novalidate">
+
+                                                    <fieldset>
+                                                        <div class="row">
+                                                            <section class="col col-6">
+                                                                <label class="input"> <i class="icon-prepend fa fa-user"></i>
+                                                                    <input type="text" name="fname" placeholder="First name"  ng-model="profile.first_name">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-6">
+                                                                <label class="input"> <i class="icon-prepend fa fa-user"></i>
+                                                                    <input type="text" name="lname" placeholder="Last name" ng-model="profile.last_name">
+                                                                </label>
+                                                            </section>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <section class="col col-6">
+                                                                <label class="input"> <i class="icon-prepend fa fa-envelope-o"></i>
+                                                                    <input type="email" name="email" placeholder="E-mail" ng-model="profile.email">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-6">
+                                                                <label class="input"> <i class="icon-prepend fa fa-phone"></i>
+                                                                    <input type="tel" name="phone" placeholder="Phone" data-mask="(999) 999-9999" ng-model="profile.phone">
+                                                                </label>
+                                                            </section>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <section class="col col-6">
+                                                            <div class="input input-file">
+                                                                <span class="button"><input type="file" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value" disabled>Browse</span><input type="text" placeholder="Profile Picture - DISABLED" readonly="">
+                                                            </div>
+                                                        </section>
+
+                                                        </div>
+
+                                                    </fieldset>
+                                                    <footer>
+                                                        <button type="submit" class="btn btn-primary" ng-click="updateProfile()">
+                                                            Update
+                                                        </button>
+                                                    </footer>
+                                                </form>
+
+                                            </div>
+                                            <!-- end widget content -->
+
+                                        </div>
+                                        <!-- end widget div -->
+
+                                    </div>
+		                        </article>
+                            </div>
+                            <div class="tab-pane" id="notification-settings">
+                                <article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+                                    <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
+
+                                        <header role="heading"><div class="jarviswidget-ctrls" role="menu">
+
+                                        </div>
+                                            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                                            <h2>Notification Settings </h2>
+
+                                        </header>
+
+                                        <!-- widget div-->
+                                        <div role="content">
+
+                                            <!-- widget edit box -->
+                                            <div class="jarviswidget-editbox">
+                                                <!-- This area used as dropdown edit box -->
+
+                                            </div>
+                                            <!-- end widget edit box -->
+
+                                            <!-- widget content -->
+                                            <div class="widget-body no-padding">
+
+                                                <form id="checkout-form" class="smart-form" novalidate="novalidate">
+
+                                                    <fieldset>
+                                                        <div class="row">
+                                                            <section class="col col-md-4 col-xs-6">
+                                                                <label class="toggle">
+                                                                    <input type="checkbox" name="checkbox-toggle" checked="checked" ng-model="profile.notifications.email">
+                                                                    <i data-swchon-text="ON" data-swchoff-text="OFF"></i><label><strong>Email</strong></label>
+                                                                </label>
+                                                                <label class="toggle">
+                                                                    <input type="checkbox" name="checkbox-toggle" checked="checked" ng-model="profile.notifications.sms">
+                                                                    <i data-swchon-text="ON" data-swchoff-text="OFF"></i><label><strong>SMS</strong></label>
+                                                                </label>
+                                                            </section>
+                                                        </div>
+
+                                                    </fieldset>
+                                                    <footer>
+                                                        <button type="submit" class="btn btn-primary" ng-click="updateProfile()">
+                                                            Update
+                                                        </button>
+                                                    </footer>
+                                                </form>
+
+                                            </div>
+                                            <!-- end widget content -->
+
+                                        </div>
+                                        <!-- end widget div -->
+
+                                    </div>
+		                        </article>
+                            </div>
+                            <div class="tab-pane" id="tab-robinhood">
+                               <article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+                                    <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
+
+                                        <header role="heading"><div class="jarviswidget-ctrls" role="menu">
+
+                                        </div>
+                                            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                                            <h2>RobinHood Settings </h2>
+
+                                        </header>
+
+                                        <!-- widget div-->
+                                        <div role="content">
+
+                                            <!-- widget edit box -->
+                                            <div class="jarviswidget-editbox">
+                                                <!-- This area used as dropdown edit box -->
+
+                                            </div>
+                                            <!-- end widget edit box -->
+
+                                            <!-- widget content -->
+                                            <div class="widget-body no-padding">
+
+                                                <form id="checkout-form" class="smart-form" novalidate="novalidate">
+
+                                                    <fieldset>
+                                                        <div class="row">
+                                                            <section class="col col-6">
+                                                                <label class="input"> <i class="icon-prepend fa fa-key"></i>
+                                                                    <input type="text" name="fname" placeholder="API Key" ng-model="profile.rh_token">
+                                                                </label>
+                                                            </section>
+                                                        </div>
+                                                    </fieldset>
+                                                    <footer>
+                                                        <button type="submit" class="btn btn-primary" ng-click="updateProfile()">
+                                                            Update
+                                                        </button>
+                                                    </footer>
+                                                </form>
+
+                                            </div>
+                                            <!-- end widget content -->
+
+                                        </div>
+                                        <!-- end widget div -->
+
+                                    </div>
+		                        </article>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- end widget content -->
+
+            </div>
+            <!-- end widget div -->
+
+        </div>
+    </article>
+{% endverbatim %}

@@ -144,10 +144,11 @@ class YahooFinance(Source):
         data = self.get_data()
         return data
 
-    def get_comments(self, symbol):
-        self.url = "https://finance.yahoo.com/quote/%s/community?p=%s" % (symbol, symbol)
-        data = self.get_data()
-        context_ids = re.findall("messageBoardId\":\"(.*?)\"", data)
+    def get_comments(self, symbol, context_ids=None):
+        if not context_ids:
+            self.url = "https://finance.yahoo.com/quote/%s/community?p=%s" % (symbol, symbol)
+            data = self.get_data()
+            context_ids = re.findall("messageBoardId\":\"(.*?)\"", data)
         results = []
         for context_id in context_ids:
             self.url = "https://finance.yahoo.com/_finance_doubledown/api/resource/canvass.getMessageListForContext_ns" \
