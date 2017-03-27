@@ -33,9 +33,10 @@ class PartialGroupView(TemplateView):
 class GenericViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        if queryset:
-            serializer = self.get_serializer(self.paginate_queryset(queryset), many=True)
-            return JSONResponse(serializer.data)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         else:
             return JSONResponse([])
 
@@ -171,7 +172,7 @@ class SymbolViewset(GenericViewSet):
     queryset = Symbol.objects.all().order_by('symbol')
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     filter_class = SymbolFilter
-    ordering_fields = ('growth_rate',)
+    # ordering_fields = ('growth_rate', '')
 
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_queryset()

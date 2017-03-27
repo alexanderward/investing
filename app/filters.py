@@ -11,7 +11,7 @@ class SymbolFilter(django_filters.FilterSet):
 
     class Meta:
         model = Symbol
-        fields = ['sector', 'min_growth_rate', 'max_growth_rate', 'company']
+        fields = ['min_growth_rate', 'max_growth_rate', 'company', 'market_cap']
 
 
 class SymbolHistoryFilter(django_filters.FilterSet):

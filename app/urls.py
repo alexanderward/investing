@@ -14,9 +14,7 @@ partial_patterns = [
     url(r'^dictionary.html$', PartialGroupView.as_view(template_name='partials/dictionary.html'), name='dictionary'),
     url(r'^links.html$', PartialGroupView.as_view(template_name='partials/links.html'), name='links'),
     url(r'^notes.html$', PartialGroupView.as_view(template_name='partials/notes.html'), name='notes'),
-    # url(r'^context-menus/message.html$', PartialGroupView.as_view(template_name='partials/context-menus/message.html'), name='message'),
-    # url(r'^context-menus/subject.html$', PartialGroupView.as_view(template_name='partials/context-menus/subject.html'), name='subject'),
-    # url(r'^context-menus/welcome.html$', PartialGroupView.as_view(template_name='partials/context-menus/welcome.html'), name='welcome'),
+    url(r'^directives/graph-table.html$', PartialGroupView.as_view(template_name='partials/directives/graph-table.html')),
 ]
 
 urlpatterns = [

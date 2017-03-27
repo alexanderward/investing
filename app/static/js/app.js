@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap', 'nvd3', 'ui.bootstrap.contextMenu'])
+var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap', 'nvd3', 'ui.bootstrap.contextMenu', 'ngTable'])
     .config(['$urlRouterProvider','$stateProvider', function($urlRouterProvider, $stateProvider) {
         $urlRouterProvider.otherwise('/');
         $stateProvider

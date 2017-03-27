@@ -1,0 +1,66 @@
+<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+    {% verbatim %}
+        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+
+        <header>
+            <div class="jarviswidget-ctrls" role="menu">
+                <a style="margin-right: 10px; height: 32px; position: relative; float: left;" >
+                    Graph Options:
+                </a>
+                <a ng-repeat="graph in graphs" ng-click="changeGraph(graph)" class="button-icon jarviswidget-edit-btn" ng-class="{'label-primary': isActiveGraph('{{ graph.type }}')}" rel="tooltip" title="{{ graph.type }}" data-placement="bottom" data-original-title="{{ graph.type }}">
+                    <i class="fa {{ graph.icon }}"></i>
+                </a>
+
+                <a style="min-width: 30px; height: 32px; position: relative; float: left; border-left: 1px solid rgba(0,0,0,.09);" >
+
+                </a>
+                <a ng-click="reset()" class="button-icon jarviswidget-edit-btn" rel="tooltip" title="Refresh" data-placement="bottom" data-original-title="Refresh">
+                    <i class="fa fa-refresh"></i>
+                </a>
+            </div>
+            <span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
+            <h2>{{ title }}</h2>
+        </header>
+
+        <!-- widget div-->
+        <div class="no-padding">
+            <div class="widget-body">
+                <div api="api" config="{refreshDataOnly: true, deepWatchData: true}">
+                    <nvd3 options="options" data="graphData"></nvd3>
+                </div>
+            </div>
+        </div>
+        <!-- end widget div -->
+    </div>
+    <div class="widget-body-toolbar">
+        <div class="btn-group">
+            <div class="btn-group btn-group" data-toggle="buttons" ng-repeat="column in columns">
+                <label class="btn btn-default" ng-class="{'label-primary': {{ column.visible }} }" ng-click="toggleColumns(column)">
+                    <input type="checkbox" ng-model="column.visible">{{column.title}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <table ng-table="tableParams" show-filter="true" class="table table-bordered table-striped table-condensed">
+        <thead>
+        <tr>
+            <th ng-repeat="column in columns" ng-show="column.visible"
+                class="text-center sortable" ng-class="{
+                    'sort-asc': tableParams.isSortBy(column.field, 'asc'),
+                    'sort-desc': tableParams.isSortBy(column.field, 'desc')
+                  }"
+                ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
+                {{column.title}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in $data track by row.id">
+            <td ng-repeat="column in columns" ng-show="column.visible" sortable="column.field">
+                {{row[column.field][column.subfield]||  row[column.field]}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</article>
+{% endverbatim %}
