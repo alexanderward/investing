@@ -1,6 +1,6 @@
 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
     {% verbatim %}
-        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+        <div class="jarviswidget jarviswidget-color-greenDark" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
 
         <header>
             <div class="jarviswidget-ctrls" role="menu">
@@ -53,8 +53,8 @@
         <tr>
             <th ng-repeat="column in columns" ng-show="column.visible" class="hasinput" rowspan="1" colspan="1">
                 <div ng-if="column.filterType == 'number'">
-                    <input type="text" class="form-control" ng-model="column.filter.min" placeholder="Min {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
-                    <input type="text" class="form-control" ng-model="column.filter.max" placeholder="Max {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                    <input type="number" class="form-control" ng-model="column.filter.min" placeholder="Min {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                    <input type="number" class="form-control" ng-model="column.filter.max" placeholder="Max {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
                 </div>
                 <div ng-if="column.filterType == 'string'">
                     <input type="text" class="form-control" ng-model="column.filter" placeholder="{{ column.title }} Filter" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
@@ -73,12 +73,12 @@
             </th>
         </tr>
         </thead>
-        <tbody>
-        <tr ng-repeat="row in $data track by row.id">
-            <td ng-repeat="column in columns" ng-show="column.visible" sortable="column.field">
-                {{row[column.field][column.subfield]||  row[column.field]}}
-            </td>
-        </tr>
+        <tbody ng-controller="ContextMenu">
+            <tr ng-repeat="row in $data track by row.id" context-menu="menuOptions">
+                <td ng-repeat="column in columns" ng-show="column.visible">
+                    {{row[column.field][column.subfield]||  row[column.field]}}
+                </td>
+            </tr>
         </tbody>
     </table>
 </article>
