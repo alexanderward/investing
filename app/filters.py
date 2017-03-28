@@ -5,13 +5,25 @@ from app.models import Symbol, SymbolHistory
 # http://django-filter.readthedocs.io/en/develop/guide/rest_framework.html
 
 class SymbolFilter(django_filters.FilterSet):
+    symbol = django_filters.CharFilter(lookup_expr='icontains')
+    company = django_filters.CharFilter(lookup_expr='icontains')
+    sector = django_filters.CharFilter(lookup_expr='icontains')
+    industry = django_filters.CharFilter(lookup_expr='icontains')
+
     min_growth_rate = django_filters.NumberFilter(name="growth_rate", lookup_expr='gte')
     max_growth_rate = django_filters.NumberFilter(name="growth_rate", lookup_expr='lte')
-    company = django_filters.CharFilter(lookup_expr='icontains')
+
+    min_market_cap = django_filters.NumberFilter(name="market_cap", lookup_expr='gte')
+    max_market_cap = django_filters.NumberFilter(name="market_cap", lookup_expr='lte')
 
     class Meta:
         model = Symbol
-        fields = ['min_growth_rate', 'max_growth_rate', 'company', 'market_cap']
+        fields = ['min_growth_rate', 'max_growth_rate',
+                  'min_market_cap', 'max_market_cap',
+                  'symbol',
+                  'company',
+                  'sector',
+                  'industry']
 
 
 class SymbolHistoryFilter(django_filters.FilterSet):

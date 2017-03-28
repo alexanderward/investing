@@ -32,17 +32,36 @@
         </div>
         <!-- end widget div -->
     </div>
-    <div class="widget-body-toolbar">
-        <div class="btn-group">
+    <!-- <div class="widget-body-toolbar"> -->
+        <div class="btn-group" style="width:100%">
             <div class="btn-group btn-group" data-toggle="buttons" ng-repeat="column in columns">
-                <label class="btn btn-default" ng-class="{'label-primary': {{ column.visible }} }" ng-click="toggleColumns(column)">
+                <label class="btn btn-default" ng-class="{'label-primary': {{ column.visible }} }" ng-click="toggleColumns(column)" style="
+    font-weight: bold;">
                     <input type="checkbox" ng-model="column.visible">{{column.title}}
                 </label>
             </div>
+            <div class="btn-group btn-group" style="float:right">
+                <a class="btn btn-danger" ng-click="removeFilters()">
+                    <i class="fa fa-trash"></i>  Remove Filters
+                </a>
+            </div>
+
         </div>
-    </div>
+    <!-- </div> -->
     <table ng-table="tableParams" show-filter="true" class="table table-bordered table-striped table-condensed">
         <thead>
+        <tr>
+            <th ng-repeat="column in columns" ng-show="column.visible" class="hasinput" rowspan="1" colspan="1">
+                <div ng-if="column.filterType == 'number'">
+                    <input type="text" class="form-control" ng-model="column.filter.min" placeholder="Min {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                    <input type="text" class="form-control" ng-model="column.filter.max" placeholder="Max {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                </div>
+                <div ng-if="column.filterType == 'string'">
+                    <input type="text" class="form-control" ng-model="column.filter" placeholder="{{ column.title }} Filter" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                </div>
+
+            </th>
+        </tr>
         <tr>
             <th ng-repeat="column in columns" ng-show="column.visible"
                 class="text-center sortable" ng-class="{
@@ -50,7 +69,7 @@
                     'sort-desc': tableParams.isSortBy(column.field, 'desc')
                   }"
                 ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
-                {{column.title}}
+                <div class="sort-indicator">{{column.title}}</div>
             </th>
         </tr>
         </thead>

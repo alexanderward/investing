@@ -7,18 +7,18 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
     var graphTableMap = {
         growthRate: {
             ordering: '-growth_rate',
-            promise: function(ordering, paginationCount, pageNumber){
-                return SymbolsService.list(ordering, paginationCount, pageNumber)
+            promise: function(ordering, filters, paginationCount, pageNumber){
+                return SymbolsService.list(ordering, filters, paginationCount, pageNumber)
             },
             table:{
                     columns : [
                         // http://plnkr.co/edit/lO8FhO?p=preview  Also allows subfield for nested objects
-                        { title: 'Symbol', field: 'symbol', visible: true},
-                        { title: 'Company', field: 'company', visible: true},
-                        { title: 'Sector', field: 'sector', visible: true},
-                        { title: 'Industry', field: 'industry', visible: true},
-                        { title: 'Growth Rate', field: 'growth_rate', visible: true },
-                        { title: 'Market Cap', field: 'market_cap', visible: true}
+                        { title: 'Symbol', field: 'symbol', visible: true, filterType: 'string'},
+                        { title: 'Company', field: 'company', visible: true, filterType: 'string'},
+                        { title: 'Sector', field: 'sector', visible: true, filterType: 'string'},
+                        { title: 'Industry', field: 'industry', visible: true, filterType: 'string'},
+                        { title: 'Growth Rate', field: 'growth_rate', visible: true, filterType: 'number'},
+                        { title: 'Market Cap', field: 'market_cap', visible: true, filterType: 'number'}
                     ]
             },
             graphs: {
@@ -129,6 +129,32 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
                 item.visible = !item.visible;
                 return item.visible;
             };
+            $scope.filterColumn = function(){
+                var filters = [];
+                $.each($scope.columns, function(index, column){
+                     if (column.filter != null && column.filter)
+                         if (column.filterType == 'string')
+                             filters.push(column.field+'='+column.filter);
+                         else if (column.filterType == 'number'){
+                             if (column.filter.min)
+                                filters.push('min_'+column.field+'='+column.filter.min);
+                             if (column.filter.max)
+                                filters.push('max_'+column.field+'='+column.filter.max);
+                         }
+                });
+                $scope.filters = filters.join("&");
+                $scope.tableParams.reload();
+                $scope.tableParams.page(1);
+            };
+
+            $scope.removeFilters = function(){
+                $.each($scope.columns, function(index, column){
+                     column.filter = null;
+                });
+                $scope.filters = null;
+                $scope.tableParams.reload();
+                $scope.tableParams.page(1);
+            };
 
             $scope.changeGraph = function(graph){
                 $scope.graphType = graph.type;
@@ -171,8 +197,6 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
 
             $scope.columns = dataSource.table.columns;
 
-
-
             $scope.tableParams = new NgTableParams(
                 {},
                 {
@@ -186,7 +210,8 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
                         orderBy = params.orderBy();
                     }
                     var pageNumber = params.page();
-                    return dataSource.promise(orderBy, params.count(), pageNumber).then(function (data) {
+
+                    return dataSource.promise(orderBy, $scope.filters, params.count(), pageNumber).then(function (data) {
                         params.total(data.count);
                         $scope.graphData = data.results;
                         $scope.options = $scope.graphDetails.options(caption);
