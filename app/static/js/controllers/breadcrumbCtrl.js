@@ -3,7 +3,7 @@ app.controller('BreadcrumbCtrl', function($scope, $location) {
         '/': 'Dashboard',
         '/profile': 'Profile',
         '/analysis': 'Analysis',
-        '/research': 'Research',
+        '/lookup': 'Symbol Lookup',
         '/dictionary': 'Dictionary',
         '/notes': 'Notes',
         '/links': 'Links'

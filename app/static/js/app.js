@@ -27,10 +27,10 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                     notification: null
                 }
             })
-            .state('research', {
-                url: '/research',
-                templateUrl: '/partials/research.html',
-                controller: 'ResearchCtrl',
+            .state('lookup', {
+                url: '/lookup',
+                templateUrl: '/partials/lookup.html',
+                controller: 'LookupCtrl',
                 params: {
                     notification: null
                 }

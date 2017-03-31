@@ -1,0 +1,85 @@
+<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+    {% verbatim %}
+        <div class="jarviswidget jarviswidget-color-greenDark" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+
+        <header>
+            <div class="jarviswidget-ctrls" role="menu">
+                <a style="margin-right: 10px; height: 32px; position: relative; float: left;" >
+                    Graph Options:
+                </a>
+                <a ng-repeat="graph in graphs" ng-click="changeGraph(graph)" class="button-icon jarviswidget-edit-btn" ng-class="{'label-primary': isActiveGraph('{{ graph.type }}')}" rel="tooltip" title="{{ graph.type }}" data-placement="bottom" data-original-title="{{ graph.type }}">
+                    <i class="fa {{ graph.icon }}"></i>
+                </a>
+
+                <a style="min-width: 30px; height: 32px; position: relative; float: left; border-left: 1px solid rgba(0,0,0,.09);" >
+
+                </a>
+                <a ng-click="reset()" class="button-icon jarviswidget-edit-btn" rel="tooltip" title="Refresh" data-placement="bottom" data-original-title="Refresh">
+                    <i class="fa fa-refresh"></i>
+                </a>
+            </div>
+            <span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
+            <h2>{{ title }}</h2>
+        </header>
+
+        <!-- widget div-->
+        <div class="no-padding">
+            <div class="widget-body">
+                <div api="api" config="{refreshDataOnly: true, deepWatchData: true}">
+                    <nvd3 options="options" data="graphData"></nvd3>
+                </div>
+            </div>
+        </div>
+        <!-- end widget div -->
+    </div>
+    <!-- <div class="widget-body-toolbar"> -->
+        <div class="btn-group" style="width:100%">
+            <div class="btn-group btn-group" data-toggle="buttons" ng-repeat="column in columns">
+                <label class="btn btn-default" ng-class="{'label-primary': {{ column.visible }} }" ng-click="toggleColumns(column)" style="
+    font-weight: bold;">
+                    <input type="checkbox" ng-model="column.visible">{{column.title}}
+                </label>
+            </div>
+            <div class="btn-group btn-group" style="float:right">
+                <a class="btn btn-danger" ng-click="removeFilters()">
+                    <i class="fa fa-trash"></i>  Remove Filters
+                </a>
+            </div>
+
+        </div>
+    <!-- </div> -->
+    <table ng-table="tableParams" show-filter="true" class="table table-bordered table-striped table-condensed">
+        <thead>
+        <tr>
+            <th ng-repeat="column in columns" ng-show="column.visible" class="hasinput" rowspan="1" colspan="1">
+                <div ng-if="column.filterType == 'number'">
+                    <input type="number" class="form-control" ng-model="column.filter.min" placeholder="Min {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                    <input type="number" class="form-control" ng-model="column.filter.max" placeholder="Max {{ column.title }}" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                </div>
+                <div ng-if="column.filterType == 'string'">
+                    <input type="text" class="form-control" ng-model="column.filter" placeholder="{{ column.title }} Filter" ng-change="filterColumn()" ng-model-options='{ debounce: 300 }'>
+                </div>
+
+            </th>
+        </tr>
+        <tr>
+            <th ng-repeat="column in columns" ng-show="column.visible"
+                class="text-center sortable" ng-class="{
+                    'sort-asc': tableParams.isSortBy(column.field, 'asc'),
+                    'sort-desc': tableParams.isSortBy(column.field, 'desc')
+                  }"
+                ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
+                <div class="sort-indicator">{{column.title}}</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody ng-controller="ContextMenu">
+            <tr ng-repeat="row in $data track by row.id" context-menu="menuOptions">
+                <td ng-repeat="column in columns" ng-show="column.visible">
+                    {{row[column.field][column.subfield]||  row[column.field]}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</article>
+{% endverbatim %}

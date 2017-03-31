@@ -1,0 +1,23 @@
+{% verbatim %}
+<div ng-controller="LookupCtrl" >
+    <auto-complete-search source="symbols">
+        <ul class="list-group no-margin" style="position:absolute; z-index:100; width: 374px;" >
+            <li class="list-group-item" ng-repeat="result in results" ng-mousedown="actionMethod(result)" style="cursor:pointer;">
+                <a><span class="badge pull-right">{{ result.sector }}</span><h5><strong>{{ result.symbol }}</strong></h5><span>{{ result.company }}</span> </a>
+            </li>
+            <li class="list-group-item" ng-if="tooMany == true" style="background:wheat; cursor:default;">
+                <a><h5><strong><span ng-bind="count"></span> results found for "<span ng-bind="searchValue"></span>" </strong></h5><span>Please revise your search.</span> </a>
+            </li>
+            <li class="list-group-item" ng-if="noResults == true" style="background:wheat; cursor:default;">
+                <a><h5><strong>No results found for "<span ng-bind="searchValue"></span>" </strong></h5><span>Please revise your search.</span> </a>
+            </li>
+        </ul>
+    </auto-complete-search>
+    Symbol: <span ng-bind="symbol"></span>
+    <section id="widget-grid" class="">
+        <div class="row">
+            <details-graph default="line" source="symbol" title="Symbol Lookup" ></details-graph>
+        </div>
+    </section>
+</div>
+{% endverbatim %}

@@ -1,9 +1,318 @@
 //http://krispo.github.io/angular-nvd3/#/
 
+// app.directive('customTable');
+app.filter("safe", ['$sce', function($sce) {
+  return function(htmlCode){
+    return $sce.trustAsHtml(htmlCode);
+  }
+}]);
+// app.directive('detailsGraph', function(SymbolsService, NgTableParams, $filter){
+//     var graphTableMap = {
+//         symbol: {
+//             promise: function(symbol){
+//                 return SymbolsService.retrieve(symbol)
+//             },
+//             table:{
+//                     columns : [
+//                         // http://plnkr.co/edit/lO8FhO?p=preview  Also allows subfield for nested objects
+//                         { title: 'Symbol', field: 'symbol', visible: true, filterType: 'string'},
+//                         { title: 'Company', field: 'company', visible: true, filterType: 'string'},
+//                         { title: 'Sector', field: 'sector', visible: true, filterType: 'string'},
+//                         { title: 'Industry', field: 'industry', visible: true, filterType: 'string'},
+//                         { title: 'Growth Rate', field: 'growth_rate', visible: true, filterType: 'number'},
+//                         { title: 'Market Cap', field: 'market_cap', visible: true, filterType: 'number'}
+//                     ]
+//             },
+//             graphs: {
+//                 line: {
+//                     options: function(caption){
+//                         return {
+//                             chart: {
+//                                 type: 'lineChart',
+//                                 height: 450,
+//                                 margin: {
+//                                     top: 20,
+//                                     right: 20,
+//                                     bottom: 20,
+//                                     left: 55
+//                                 },
+//                                 x: function (d){ return d.x; },
+//                                 y: function (d){ return d.y; },
+//                                 useInteractiveGuideline: true,
+//                                 dispatch: {
+//                                     stateChange: function(e){},
+//                                     changeState: function(e){},
+//                                     tooltipShow: function(e){},
+//                                     tooltipHide: function(e){}
+//                                 },
+//                                 xAxis:{
+//                                     axisLabel: "Time (ms)"
+//                                 },
+//                                 yAxis:{
+//                                     axisLabel: "Voltage",
+//                                     tickFormat: function (d){
+//                                         return d3.format('.02f')(d);
+//                                     },
+//                                     axisLabelDistance: -10
+//                                 },
+//                                 callback: function (chart) {
+//                                     console.log("!!! lineChart callback !!!");
+//                                 }
+//                             }
+//                         }
+//                     },
+//                     dataConversion:function(data){
+//                         var graphResults = [];
+//                         $.each(data, function (index, symbol_object) {
+//                             graphResults.push({key: symbol_object.symbol, 'y': symbol_object.growth_rate});
+//                         });
+//                         return graphResults
+//                     },
+//                     faIcon: 'fa-pie-chart'
+//                 },
+//                 discreteBar: {
+//                     options: function(caption){
+//                 return {
+//                     caption: {
+//                         enable: true,
+//                         text: caption,
+//                         css: {
+//                             width: null,
+//                             textAlign: 'center'
+//                         }
+//                     },
+//                     chart: {
+//             type: 'discreteBarChart',
+//             height: 450,
+//             margin : {
+//                 top: 20,
+//                 right: 20,
+//                 bottom: 50,
+//                 left: 55
+//             },
+//             x: function(d){return d.label;},
+//             y: function(d){return d.value + (1e-10);},
+//             showValues: true,
+//             valueFormat: function(d){
+//                 return d3.format(',.4f')(d);
+//             },
+//             duration: 500,
+//             xAxis: {
+//                 axisLabel: 'Stocks'
+//             },
+//             yAxis: {
+//                 axisLabel: 'Growth Rate',
+//                 axisLabelDistance: -10
+//             }
+//         }
+//                 }
+//             },
+//                     dataConversion: function(data){
+//                     var graphResults = [];
+//                     $.each(data, function (index, symbol_object) {
+//                         graphResults.push({label: symbol_object.symbol, 'value': symbol_object.growth_rate});
+//                     });
+//                     return [{key: '', values: graphResults}]
+//                 },
+//                     faIcon: 'fa-bar-chart'
+//                 }
+//             }
+//         }
+//     };
+//
+//     return {
+//         restrict: 'E', //E = element, A = attribute, C = class, M = comment
+//         replace : true,
+//         controller: function($scope, $element, $attrs){
+//             $scope.reset = function () {
+//                 $scope.tableParams.parameters({sorting:[]});
+//                 $scope.tableParams.reload();
+//                 $scope.tableParams.page(1);
+//             };
+//             $scope.isActiveGraph = function(item) {
+//                 return $scope.activeGraph === item;
+//             };
+//             $scope.toggleColumns = function (item) {
+//                 item.visible = !item.visible;
+//                 return item.visible;
+//             };
+//             $scope.filterColumn = function(){
+//                 var filters = [];
+//                 $.each($scope.columns, function(index, column){
+//                      if (column.filter != null && column.filter)
+//                          if (column.filterType == 'string')
+//                              filters.push(column.field+'='+column.filter);
+//                          else if (column.filterType == 'number'){
+//                              if (column.filter.min)
+//                                 filters.push('min_'+column.field+'='+column.filter.min);
+//                              if (column.filter.max)
+//                                 filters.push('max_'+column.field+'='+column.filter.max);
+//                          }
+//                 });
+//                 $scope.filters = filters.join("&");
+//                 $scope.tableParams.reload();
+//                 $scope.tableParams.page(1);
+//             };
+//
+//             $scope.removeFilters = function(){
+//                 $.each($scope.columns, function(index, column){
+//                      column.filter = null;
+//                 });
+//                 $scope.filters = null;
+//                 $scope.tableParams.reload();
+//                 $scope.tableParams.page(1);
+//             };
+//
+//             $scope.changeGraph = function(graph){
+//                 $scope.graphType = graph.type;
+//                 $scope.activeGraph = graph.type;
+//                 var dataSource = graphTableMap[$scope.source];
+//                 $scope.graphDetails = dataSource.graphs[$scope.graphType];
+//                 $scope.reset();
+//             }
+//
+//         },
+//         controllerAs: 'vm',
+//         link: function($scope, $element, $attrs, $ctrl) {
+//             $scope.source = $attrs.source;
+//             $scope.title = $attrs.title;
+//             var caption = $attrs.caption;
+//
+//             if (! _.has(graphTableMap, $scope.source)){
+//                 throw new TypeError("Must include valid graph source.  Valid options: " + Object.keys(graphTableMap).join(","));
+//             }
+//             if (typeof $attrs.default == 'undefined'){
+//                 $scope.graphType = Object.keys(graphTableMap)[0];
+//             }else{
+//                 $scope.graphType = $attrs.default;
+//             }
+//
+//             var dataSource = graphTableMap[$scope.source];
+//             $scope.graphDetails = dataSource.graphs[$scope.graphType];
+//
+//             if (typeof $scope.graphDetails == 'undefined') {
+//                 throw new TypeError("Must include valid default type.  Valid options: " + Object.keys(dataSource.graphs).join(","));
+//             }
+//
+//             var graphButtons = [];
+//             $scope.activeGraph = $scope.graphType;
+//             $.each(dataSource.graphs, function (graphName, graphDetails) {
+//                 graphButtons.push({type: graphName, icon: graphDetails.faIcon});
+//             });
+//
+//             $scope.graphs = graphButtons;
+//
+//             $scope.columns = dataSource.table.columns;
+//
+//             $scope.tableParams = new NgTableParams(
+//                 {},
+//                 {
+//                 // total: 0, // length of data
+//                 getData: function(params) {
+//                     $scope.graphData = [];
+//                     var orderBy;
+//                     if (params.orderBy().length == 0){
+//                         orderBy = dataSource.ordering;
+//                     }else{
+//                         orderBy = params.orderBy();
+//                     }
+//                     var pageNumber = params.page();
+//
+//                     return dataSource.promise(orderBy, $scope.filters, params.count(), pageNumber).then(function (data) {
+//                         params.total(data.count);
+//                         $scope.graphData = data.results;
+//                         $scope.options = $scope.graphDetails.options(caption);
+//                         if (typeof $scope.graphDetails.dataConversion != 'undefined')
+//                             $scope.graphData = $scope.graphDetails.dataConversion($scope.graphData);
+//
+//                         return data.results;
+//
+//                     }, function (error) {
+//                         console.log(error)
+//                     });
+//                 }
+//             });
+//
+//
+//         },
+//         scope: true,
+//         templateUrl: '/partials/directives/graph-details.html'
+//     }
+// });
+app.directive('autoCompleteSearch', function(SymbolsService, $compile){
+    var searchMap = {
+        symbols: {
+            filter: 'symbol_or_company',
+            orderBy: 'symbol',
+            promise: function (ordering, filters, paginationCount, pageNumber) {
+                return SymbolsService.list(ordering, filters, paginationCount, pageNumber)
+            },
+            placeholder: "Search for symbols or companies: YHOO, GOOG, DIS"
+        }
+    };
+
+    return {
+        restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+        controller: function($scope, $element, $attrs){
+            var getResults = function(){
+                if ($scope.searchValue){
+                    var pageNumber = 1;
+                    var paginationSize = 6;
+                    var filter = $scope.dataSource.filter + '=' + $scope.searchValue;
+                    $scope.dataSource.promise($scope.dataSource.orderBy, filter , paginationSize, pageNumber).then(function (data) {
+                        if (data.results.length > paginationSize-1)
+                            $scope.tooMany = true;
+                        else if(data.results.length == 0)
+                            $scope.noResults = true;
+                        $scope.results = data.results.slice(0, paginationSize-1);
+                        $scope.count = data.count;
+                    }, function (error) {
+                        console.log(error)
+                    });
+                }else{
+                    $scope.results = [];
+                }
+
+            };
+
+            $scope.searchValue = null;
+            $scope.search = function(){
+                $scope.noResults = false;
+                $scope.tooMany = false;
+                $scope.count = 0;
+                getResults();
+
+            };
+            $scope.onBlur = function(event){
+                $scope.results = [];
+                $scope.noResults = false;
+                $scope.tooMany = false;
+                $scope.count = 0;
+            };
+            $scope.onFocus = function(){
+                getResults();
+            };
+
+        },
+        // controllerAs: 'vm',
+        transclude: true,
+        replace: true,
+        link: function($scope, $element, $attrs, $ctrl) {
+            var source = $attrs.source;
+            $scope.callback = $attrs.callback;
+            if (! _.has(searchMap, source)){
+                throw new TypeError("Must include valid data source.  Valid options: " + Object.keys(searchMap).join(","));
+            }
+            $scope.dataSource = searchMap[source];
+            $scope.placeholder = $scope.dataSource.placeholder;
+            $scope.actionMethod = function(result){
+                $scope.$parent.autoCompleteCallback(result);
+            }
+        },
+        templateUrl: '/partials/directives/auto-complete-input.html'
+    }
+});
 app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
-    function has(object, key) {
-      return object ? hasOwnProperty.call(object, key) : false;
-   }
     var graphTableMap = {
         growthRate: {
             ordering: '-growth_rate',
@@ -171,7 +480,7 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
             $scope.title = $attrs.title;
             var caption = $attrs.caption;
 
-            if (! has(graphTableMap, $scope.source)){
+            if (! _.has(graphTableMap, $scope.source)){
                 throw new TypeError("Must include valid graph source.  Valid options: " + Object.keys(graphTableMap).join(","));
             }
             if (typeof $attrs.default == 'undefined'){
@@ -581,3 +890,5 @@ app.directive('contextMenu', ["$parse", "$q", "$sce", function ($parse, $q, cust
         });
     };
 }]);
+
+

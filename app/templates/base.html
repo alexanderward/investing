@@ -11,20 +11,17 @@
 
 		<!-- #CSS Links -->
 		<!-- Basic Styles -->
-		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/bootstrap/bootstrap.min.css' %}">
+		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/ng-table.min.css' %}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/bootstrap/bootstrap.min.css' %}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/fontawesome/font-awesome.min.css' %}">
 
 		<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/smartadmin/smartadmin-production-plugins.min.css' %}">
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/smartadmin/smartadmin-production.min.css' %}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/smartadmin/smartadmin-skins.min.css' %}">
-
-
 		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/nvd3/nv.d3.min.css' %}">
+		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/custom.css' %}">
 
-		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/base.css' %}">
-		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/configure.css' %}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/ng-table.min.css' %}">
         {% block css %}
         {% endblock %}
 
@@ -107,24 +104,33 @@
 				Please note that these links work a bit different than
 				traditional href="" links. See documentation for details.
 				-->
-
 				<ul>
-					<li ng-class="{active: isActive('/')}">
+					<li ng-class="{activeNav: isActive('/')}">
 						<a ui-sref="dashboardOverview"><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">Dashboard</span></a>
 					</li>
-					<li ng-class="{active: isActive('/analysis')}">
+                    <li ng-class="{activeNav: isActive('/lookup')}">
+						<a ui-sref="lookup"><i class="fa fa-lg fa-fw fa-search txt-color-greenDark"></i> <span class="menu-item-parent">Lookup</span></a>
+					</li>
+                    <li class="">
+						<a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent">Graphs</span><b class="collapse-sign"><em class="fa fa-minus-square-o"></em></b></a>
+						<ul style="display: block;">
+							<li>
+								<a href="flot.html">Growth Rate</a>
+							</li>
+						</ul>
+					</li>
+
+					<li ng-class="{activeNav: isActive('/analysis')}">
 						<a ui-sref="analysis"><i class="fa fa-lg fa-fw fa-cube txt-color-blue"></i> <span class="menu-item-parent">Analysis</span></a>
 					</li>
-                    <li ng-class="{active: isActive('/research')}">
-						<a ui-sref="research"><i class="fa fa-lg fa-fw fa-search txt-color-greenDark"></i> <span class="menu-item-parent">Research</span></a>
-					</li>
-                    <li ng-class="{active: isActive('/dictionary')}">
+
+                    <li ng-class="{activeNav: isActive('/dictionary')}">
 						<a ui-sref="dictionary"><i class="fa fa-lg fa-fw fa-book txt-color-redLight"></i> <span class="menu-item-parent">Dictionary</span></a>
                     </li>
-                    <li ng-class="{active: isActive('/notes')}">
+                    <li ng-class="{activeNav: isActive('/notes')}">
 						<a ui-sref="notes"><i class="fa fa-lg fa-fw fa-sticky-note txt-color-orangeDark"></i> <span class="menu-item-parent">Notes</span></a>
                     </li>
-                    <li ng-class="{active: isActive('/links')}">
+                    <li ng-class="{activeNav: isActive('/links')}">
 						<a ui-sref="links"><i class="fa fa-lg fa-fw fa-paperclip txt-color-purple"></i> <span class="menu-item-parent">Links</span></a>
                     </li>
 				</ul>
@@ -300,8 +306,7 @@
         <script src="{% static 'js/vendor/angularjs/angular-ui-router.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ui-bootstrap-tpls-2.4.0.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
-        <script src="{% static 'js/vendor/contextMenu.js' %}"></script>
-
+        
         <script src="{% static 'js/vendor/d3/d3.min.js' %}"></script>
         <script src="{% static 'js/vendor/nvd3/nv.d3.min.js' %}"></script>
         <script src="{% static 'js/vendor/angular-nvd3/angular-nvd3.min.js' %}"></script>
@@ -317,7 +322,7 @@
         <script src="{% static 'js/controllers/navigationCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/breadcrumbCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/definitionsCtrl.js' %}"></script>
-        <script src="{% static 'js/controllers/researchCtrl.js' %}"></script>
+        <script src="{% static 'js/controllers/lookupCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/analysisCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/linksCtrl.js' %}"></script>
         <script src="{% static 'js/controllers/notesCtrl.js' %}"></script>
@@ -336,7 +341,7 @@
         <script src="{% static 'js/services/profileService.js' %}"></script>
 
 
-        <script src="{% static 'js/directives/graphs.js' %}"></script>
+        <script src="{% static 'js/directives.js' %}"></script>
 
 
 

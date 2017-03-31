@@ -1,0 +1,13 @@
+{% verbatim %}
+<div class="container">
+    <div class="col-xs-6 col-sm-4 col-md-4"></div>
+    <div class="col-xs-6 col-sm-4 col-md-4 header-search pull-left" style="width:400px;">
+        <input style="padding:20px;" type="text" name="param" placeholder="{{ placeholder }}" ng-model="searchValue" ng-change="search()" ng-model-options='{ debounce: 300 }' autocomplete="none" ng-blur="onBlur($event)" ng-focus="onFocus($event)">
+        <button disabled>
+            <i class="fa fa-search txt-color-greenDark" style="padding: 5px; font-size: xx-large; margin-left: 15px;"></i>
+        </button>
+        <div ng-transclude></div>
+    </div>
+    <div class="col-xs-6 col-sm-4 col-md-4"></div>
+</div>
+{% endverbatim %}

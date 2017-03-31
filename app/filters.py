@@ -1,5 +1,6 @@
-import django_filters
 from app.models import Symbol, SymbolHistory
+import django_filters
+from django.db.models import Q
 
 
 # http://django-filter.readthedocs.io/en/develop/guide/rest_framework.html
@@ -9,6 +10,8 @@ class SymbolFilter(django_filters.FilterSet):
     company = django_filters.CharFilter(lookup_expr='icontains')
     sector = django_filters.CharFilter(lookup_expr='icontains')
     industry = django_filters.CharFilter(lookup_expr='icontains')
+
+    symbol_or_company = django_filters.CharFilter(method='filter_symbol_or_company')
 
     min_growth_rate = django_filters.NumberFilter(name="growth_rate", lookup_expr='gte')
     max_growth_rate = django_filters.NumberFilter(name="growth_rate", lookup_expr='lte')
@@ -23,7 +26,12 @@ class SymbolFilter(django_filters.FilterSet):
                   'symbol',
                   'company',
                   'sector',
-                  'industry']
+                  'industry',
+                  'symbol_or_company'
+                  ]
+
+    def filter_symbol_or_company(self, queryset, name, value):
+        return queryset.filter(Q(symbol__contains=value) | Q(company__contains=value))
 
 
 class SymbolHistoryFilter(django_filters.FilterSet):

@@ -3,5 +3,5 @@ app.controller('LookupCtrl', function($scope, $stateParams, $state){
         $scope.symbol = result.symbol;
     };
 
-    
+
 });

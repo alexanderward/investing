@@ -1,0 +1,11 @@
+.activeNav:before{
+    content: "\f0d9";
+    font-family: FontAwesome;
+    display: block;
+    line-height: 35px;
+    width: 27px;
+    position: absolute;
+    right: -21px;
+    font-size: 20px;
+    color: #eee;
+}
