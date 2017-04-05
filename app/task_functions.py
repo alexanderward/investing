@@ -1,10 +1,23 @@
 import datetime
+
+import requests
 from celery.utils.log import get_task_logger
 from django.db import transaction
 
-from app.models import SymbolHistory, Financial, Symbol
+debug = True
+if debug:
+    import sys, os
+
+    sys.path.append('/path/to/your/django/app')
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'investing.settings'
+    import django
+
+    django.setup()
+from app.models import SymbolHistory, Financial, Symbol, SymbolOfficers, SymbolProfile, SymbolNews
 from robinhood import RobinHood
-from stock_apis.api import get_listed_companies, get_historic
+from stock_apis.api import get_listed_companies, get_historic, get_stock_statistics, get_stock_news
+from bulk_update.helper import bulk_update
+from afinn import Afinn
 
 logger = get_task_logger(__name__)
 
@@ -66,6 +79,7 @@ def get_listed_stocks():
         return symbol
 
     all_symbols = set(Symbol.objects.all().values_list('symbol', flat=True))
+    symbol_container = []
     current_symbols = set()
     for company in companies:
         symbol_ = company[0]
@@ -80,14 +94,19 @@ def get_listed_stocks():
 
         symbol, created = Symbol.objects.get_or_create(symbol=symbol_)
         symbol = check_fields(name, sector, industry, ipo_year, market_cap, symbol)
-        symbol.save()
-
+        symbol_container.append(symbol)
         current_symbols.add(symbol_)
 
+    batch_size = 10  # SQLite Limitation is low...
+    bulk_update(symbol_container, batch_size=batch_size)
+
+    symbol_container = []
     for symbol__ in all_symbols.difference(current_symbols):
         symbol = Symbol.objects.get(symbol=symbol__)
         symbol.listed = False
-        symbol.save()
+        symbol_container.append(symbol)
+    batch_size = 10  # SQLite Limitation is low...
+    bulk_update(symbol_container, batch_size=batch_size)
 
 
 @transaction.atomic
@@ -166,3 +185,93 @@ def get_average_percent_change(symbol, day_count=100):
         moving_average = sum(percent_changes) / len(percent_changes)
         symbol.moving_average = moving_average
     return symbol
+
+
+@transaction.atomic
+def get_symbol_statistics(symbol):
+    response = get_stock_statistics(symbol.symbol)
+    if isinstance(response, dict):
+        if response.get('quoteSummary'):
+            result = response['quoteSummary'].get('result')
+            if result:
+                result = result[0]
+                asset_profile = result.get('assetProfile')
+                balance_sheet_profile = result.get('balanceSheetHistory')
+                balance_sheet_history_quarterly = result.get('balanceSheetHistoryQuarterly')
+                calendar_events = result.get('calendarEvents')
+                cashflow_statement_history = result.get('cashflowStatementHistory')
+                default_key_statistics = result.get('defaultKeyStatistics')
+                earnings = result.get('earnings')
+                financial_data = result.get('financialData')
+                fund_ownership = result.get('fundOwnership')
+                income_statement_history = result.get('incomeStatementHistory')
+                income_statement_history_quarterly = result.get('incomeStatementHistoryQuarterly')
+                inside_holders = result.get('insiderHolders')
+                insider_transactions = result.get('insiderTransactions')
+                institution_ownership = result.get('institutionOwnership')
+                major_direct_holders = result.get('majorDirectHolders')
+                major_holder_breakdown = result.get('majorHoldersBreakdown')
+                net_share_purchase_activity = result.get('netSharePurchaseActivity')
+                recommendation_trend = result.get('recommendationTrend')
+                security_filings = result.get('secFilings')
+                summary_profile = result.get('summaryProfile')
+                upgrade_downgrade_history = result.get('upgradeDowngradeHistory')
+
+                symbol_profile, created = SymbolProfile.objects.get_or_create(symbol_id=symbol.id)
+
+                symbol_profile.address = summary_profile.get('address1')
+                symbol_profile.city = summary_profile.get('city')
+                symbol_profile.state = summary_profile.get('state')
+                symbol_profile.country = summary_profile.get('country')
+                symbol_profile.zipcode = summary_profile.get('zip')
+                symbol_profile.phone = summary_profile.get('phone')
+                symbol_profile.website = summary_profile.get('website')
+                symbol_profile.summary = summary_profile.get('longBusinessSummary')
+                symbol_profile.number_of_employees = summary_profile.get('fullTimeEmployees')
+                for officer in asset_profile.get('companyOfficers'):
+                    symbol_officer, created = SymbolOfficers.objects.get_or_create(symbol_id=symbol.id,
+                                                                                   name=officer.get('name'))
+                    symbol_officer.age = officer.get('age')
+                    symbol_officer.title = officer.get('title')
+                    total_pay = officer.get('totalPay', {})
+                    symbol_officer.salary = total_pay.get('raw')
+                    exercised_value = officer.get('exercisedValue', {})
+                    symbol_officer.exercised_value = exercised_value.get('raw')
+                    unexercised_value = officer.get('unexercisedValue', {})
+                    symbol_officer.unexercised_value = unexercised_value.get('raw')
+                    symbol_officer.save()
+                    symbol_profile.officers.add(symbol_officer)
+
+                symbol_profile.save()
+                symbol.profile = symbol_profile
+                symbol.save()
+
+
+@transaction.atomic
+def get_yahoo_symbol_news(symbol):
+    response = get_stock_news(symbol.symbol)
+    if isinstance(response, dict):
+        if response.get('Content'):
+            results = response['Content'].get('result')
+            for result in results:
+                url = result.get('url')
+                if url:
+                    symbol_news, created = SymbolNews.objects.get_or_create(symbol_id=symbol.id, url=url)
+                    symbol_news.author = result.get('author_name')
+                    symbol_news.title = result.get('title')
+                    symbol_news.publisher = result.get('provider_name')
+                    symbol_news.publisher_time = result.get('provider_publish_time')
+                    symbol_news.summary = result.get('summary')
+                    symbol_news.tag = result.get('tag')
+                    symbol_news.timezone = result.get('timeZoneFullName')
+            # todo - Add a parsing lib to find the article div based on domain instead of including adds/banners/nav/etc
+                    req = requests.get(url, verify=False)
+                    if req.status_code == 200:
+                        afinn = Afinn()
+                        symbol_news.sentiment_analysis = afinn.score(req.content)
+                    symbol_news.save()
+                    symbol.news.add(symbol_news)
+    symbol.save()
+if __name__ == '__main__':
+    # get_symbol_statistics(Symbol.objects.get(symbol='ATVI'))
+    get_yahoo_symbol_news(Symbol.objects.get(symbol='ATVI'))

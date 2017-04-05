@@ -239,6 +239,21 @@ app.filter("safe", ['$sce', function($sce) {
 //         templateUrl: '/partials/directives/graph-details.html'
 //     }
 // });
+app.directive('stockDetails', function(SymbolsService, NgTableParams, $filter){
+
+    return {
+        restrict: 'E', //E = element, A = attribute, C = class, M = comment
+        link: function(scope, element, attrs){
+            // scope.$watch('data', function() {
+            //     console.log(scope.symbol);
+            // });
+        },
+        scope: {
+            symbol: '='
+        },
+        templateUrl: '/partials/directives/stock-details.html'
+    }
+});
 app.directive('autoCompleteSearch', function(SymbolsService, $compile){
     var searchMap = {
         symbols: {
@@ -322,12 +337,12 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
             table:{
                     columns : [
                         // http://plnkr.co/edit/lO8FhO?p=preview  Also allows subfield for nested objects
-                        { title: 'Symbol', field: 'symbol', visible: true, filterType: 'string'},
-                        { title: 'Company', field: 'company', visible: true, filterType: 'string'},
-                        { title: 'Sector', field: 'sector', visible: true, filterType: 'string'},
-                        { title: 'Industry', field: 'industry', visible: true, filterType: 'string'},
-                        { title: 'Growth Rate', field: 'growth_rate', visible: true, filterType: 'number'},
-                        { title: 'Market Cap', field: 'market_cap', visible: true, filterType: 'number'}
+                        { id: 1, label: 'Symbol', field: 'symbol', visible: true, filterType: 'string'},
+                        { id: 2, label: 'Company', field: 'company', visible: true, filterType: 'string'},
+                        { id: 3, label: 'Sector', field: 'sector', visible: true, filterType: 'string'},
+                        { id: 4, label: 'Industry', field: 'industry', visible: true, filterType: 'string'},
+                        { id: 5, label: 'Growth Rate', field: 'growth_rate', visible: true, filterType: 'number'},
+                        { id: 6, label: 'Market Cap', field: 'market_cap', visible: true, filterType: 'number'}
                     ]
             },
             graphs: {
@@ -426,6 +441,109 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
         restrict: 'E', //E = element, A = attribute, C = class, M = comment
         replace : true,
         controller: function($scope, $element, $attrs){
+            var source = $attrs.source;
+            $scope.title = $attrs.title;
+            var caption = $attrs.caption;
+            var graphType;
+
+            if (! _.has(graphTableMap, source)){
+                throw new TypeError("Must include valid graph source.  Valid options: " + Object.keys(graphTableMap).join(","));
+            }
+            if (typeof $attrs.default == 'undefined'){
+                graphType = Object.keys(graphTableMap)[0];
+            }else{
+                graphType = $attrs.default;
+            }
+            var dataSource = graphTableMap[source];
+            $scope.graphDetails = dataSource.graphs[graphType];
+
+            if (typeof $scope.graphDetails == 'undefined') {
+                throw new TypeError("Must include valid default type.  Valid options: " + Object.keys(dataSource.graphs).join(","));
+            }
+
+            var graphButtons = [];
+            $scope.activeGraph = $scope.graphType;
+            $.each(dataSource.graphs, function (graphName, graphDetails) {
+                graphButtons.push({type: graphName, icon: graphDetails.faIcon});
+            });
+
+            $scope.graphs = graphButtons;
+
+            $scope.columns = dataSource.table.columns;
+
+            var enabledCols = $scope.columns.map(function (obj){
+                return {id: obj.id}
+            });
+            $scope.checkbox = {
+                model: enabledCols,
+                data: $scope.columns,
+                texts: {
+                    buttonDefaultText: 'Toggle Columns'
+                },
+                settings:  {
+                    checkBoxes: true,
+                    enableSearch: true,
+                    styleActive: true,
+                    dynamicTitle: false,
+                    smartButtonTextConverter: function(itemText, originalItem) {
+                        if (itemText === 'Jhon') {
+                            return 'Jhonny!';
+                        }
+                        return itemText;
+                    }
+                },
+                events: {
+                        onItemSelect: function(property) {
+                            index = _.indexOf(_.pluck($scope.columns, 'id'), property.id);
+                            $scope.columns[index].visible = true;
+                        },
+                        onItemDeselect: function(property) {
+                            index = _.indexOf(_.pluck($scope.columns, 'id'), property.id);
+                            $scope.columns[index].visible = false;
+                        },
+                        onSelectAll: function(property) {
+                            _.each($scope.columns, function(column){
+                               column.visible = true;
+                            });
+                        },
+                        onDeselectAll: function(property) {
+                            _.each($scope.columns, function(column){
+                               column.visible = false;
+                            });
+                        }
+                    }
+            };
+
+            $scope.tableParams = new NgTableParams(
+                {},
+                {
+                // total: 0, // length of data
+                getData: function(params) {
+                    $scope.graphData = [];
+                    var orderBy;
+                    if (params.orderBy().length == 0){
+                        orderBy = dataSource.ordering;
+                    }else{
+                        orderBy = params.orderBy();
+                    }
+                    var pageNumber = params.page();
+
+                    return dataSource.promise(orderBy, $scope.filters, params.count(), pageNumber).then(function (data) {
+                        params.total(data.count);
+                        $scope.graphData = data.results;
+                        $scope.options = $scope.graphDetails.options(caption);
+                        if (typeof $scope.graphDetails.dataConversion != 'undefined')
+                            $scope.graphData = $scope.graphDetails.dataConversion($scope.graphData);
+
+                        return data.results;
+
+                    }, function (error) {
+                        console.log(error)
+                    });
+                }
+            });
+
+
             $scope.reset = function () {
                 $scope.tableParams.parameters({sorting:[]});
                 $scope.tableParams.reload();
@@ -434,9 +552,11 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
             $scope.isActiveGraph = function(item) {
                 return $scope.activeGraph === item;
             };
-            $scope.toggleColumns = function (item) {
+            $scope.toggleColumns = function ($event, item) {
+
                 item.visible = !item.visible;
-                return item.visible;
+                $event.stopPropagation();
+                // return item.visible;
             };
             $scope.filterColumn = function(){
                 var filters = [];
@@ -471,71 +591,7 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
                 var dataSource = graphTableMap[$scope.source];
                 $scope.graphDetails = dataSource.graphs[$scope.graphType];
                 $scope.reset();
-            }
-
-        },
-        controllerAs: 'vm',
-        link: function($scope, $element, $attrs, $ctrl) {
-            $scope.source = $attrs.source;
-            $scope.title = $attrs.title;
-            var caption = $attrs.caption;
-
-            if (! _.has(graphTableMap, $scope.source)){
-                throw new TypeError("Must include valid graph source.  Valid options: " + Object.keys(graphTableMap).join(","));
-            }
-            if (typeof $attrs.default == 'undefined'){
-                $scope.graphType = Object.keys(graphTableMap)[0];
-            }else{
-                $scope.graphType = $attrs.default;
-            }
-
-            var dataSource = graphTableMap[$scope.source];
-            $scope.graphDetails = dataSource.graphs[$scope.graphType];
-
-            if (typeof $scope.graphDetails == 'undefined') {
-                throw new TypeError("Must include valid default type.  Valid options: " + Object.keys(dataSource.graphs).join(","));
-            }
-
-            var graphButtons = [];
-            $scope.activeGraph = $scope.graphType;
-            $.each(dataSource.graphs, function (graphName, graphDetails) {
-                graphButtons.push({type: graphName, icon: graphDetails.faIcon});
-            });
-
-            $scope.graphs = graphButtons;
-
-            $scope.columns = dataSource.table.columns;
-
-            $scope.tableParams = new NgTableParams(
-                {},
-                {
-                // total: 0, // length of data
-                getData: function(params) {
-                    $scope.graphData = [];
-                    var orderBy;
-                    if (params.orderBy().length == 0){
-                        orderBy = dataSource.ordering;
-                    }else{
-                        orderBy = params.orderBy();
-                    }
-                    var pageNumber = params.page();
-
-                    return dataSource.promise(orderBy, $scope.filters, params.count(), pageNumber).then(function (data) {
-                        params.total(data.count);
-                        $scope.graphData = data.results;
-                        $scope.options = $scope.graphDetails.options(caption);
-                        if (typeof $scope.graphDetails.dataConversion != 'undefined')
-                            $scope.graphData = $scope.graphDetails.dataConversion($scope.graphData);
-
-                        return data.results;
-
-                    }, function (error) {
-                        console.log(error)
-                    });
-                }
-            });
-
-
+            };
         },
         scope: true,
         templateUrl: '/partials/directives/graph-table.html'

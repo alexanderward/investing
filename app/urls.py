@@ -15,6 +15,7 @@ partial_patterns = [
     url(r'^links.html$', PartialGroupView.as_view(template_name='partials/links.html'), name='links'),
     url(r'^notes.html$', PartialGroupView.as_view(template_name='partials/notes.html'), name='notes'),
     url(r'^directives/graph-table.html$', PartialGroupView.as_view(template_name='partials/directives/graph-table.html')),
+    url(r'^directives/stock-details.html$', PartialGroupView.as_view(template_name='partials/directives/stock-details.html')),
     url(r'^directives/graph-details.html$', PartialGroupView.as_view(template_name='partials/directives/graph-details.html')),
     url(r'^directives/auto-complete-input.html$', PartialGroupView.as_view(template_name='partials/directives/auto'
                                                                                          '-complete-input.html')),

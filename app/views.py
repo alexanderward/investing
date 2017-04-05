@@ -5,7 +5,7 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from app.filters import SymbolFilter, SymbolHistoryFilter
-from app.models import Definition, Financial, SymbolHistory, Symbol, User
+from app.models import Definition, Financial, SymbolHistory, Symbol, User, Note
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -172,6 +172,7 @@ class SymbolViewset(GenericViewSet):
     queryset = Symbol.objects.all().order_by('symbol')
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     filter_class = SymbolFilter
+
     # ordering_fields = ('growth_rate', '')
 
     def retrieve(self, request, *args, **kwargs):

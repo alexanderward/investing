@@ -1,7 +1,9 @@
 from copy import deepcopy
 
+from django.forms import model_to_dict
 from rest_framework import serializers
-from app.models import Definition, Financial, User, SymbolHistory, Symbol
+from app.models import Definition, Financial, User, SymbolHistory, Symbol, Note, NoteTypes, SymbolProfile, \
+    SymbolOfficers, SymbolNews
 
 
 class UserProfileSerializer(serializers.Serializer):
@@ -87,6 +89,38 @@ class FinancialsSerializer(serializers.Serializer):
         fields = ['available_funds', 'funds_held_for_orders', 'portfolio_value', 'timestamp']
 
 
+class NoteSerializer(serializers.Serializer):
+    type = serializers.CharField(source='note_type.codename')
+    title = serializers.CharField()
+    value = serializers.CharField()
+
+    class Meta:
+        model = Note
+        fields = '__all__'
+
+
+class SymbolNewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SymbolNews
+        fields = '__all__'
+        ordering = ('publisher_time',)
+
+
+class SymbolOfficersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SymbolOfficers
+        fields = '__all__'
+        ordering = ('salary',)
+
+
+class SymbolProfileSerializer(serializers.ModelSerializer):
+    officers = SymbolOfficersSerializer(many=True)
+
+    class Meta:
+        model = SymbolProfile
+        fields = '__all__'
+
+
 class SymbolSerializer(serializers.Serializer):
     def create(self, validated_data):
         pass
@@ -97,13 +131,15 @@ class SymbolSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     symbol = serializers.CharField()
     company = serializers.CharField()
-    description = serializers.CharField()
     sector = serializers.CharField()
     industry = serializers.CharField()
     ipo_year = serializers.IntegerField()
     market_cap = serializers.FloatField()
     listed = serializers.BooleanField()
     growth_rate = serializers.FloatField()
+    notes = NoteSerializer(many=True)
+    profile = SymbolProfileSerializer(read_only=True)
+    news = SymbolNewsSerializer(many=True)
 
     class Meta:
         model = Symbol

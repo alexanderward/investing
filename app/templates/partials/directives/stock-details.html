@@ -1,0 +1,264 @@
+{% verbatim %}
+<div class="row">
+    <br>
+    <div class="col-sm-9 col-md-9 col-lg-9">
+        <article >
+    <div class="jarviswidget jarviswidget-color-blueLight" id="wid-id-10" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false" role="widget">
+
+    <header role="heading">
+        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+        <h2>
+            <span ng-if="symbol.symbol"><strong>{{ symbol.symbol }}</strong> - {{ symbol.company }}</span>
+            <span ng-if="!symbol.symbol"><strong>No symbol selected</strong></span>
+        </h2>
+
+    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+    <!-- widget div-->
+    <div role="content">
+
+        <!-- widget edit box -->
+        <div class="jarviswidget-editbox">
+            <!-- This area used as dropdown edit box -->
+
+        </div>
+        <!-- end widget edit box -->
+
+        <!-- widget content -->
+        <div class="widget-body no-padding">
+            <div class="panel-group smart-accordion-default" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" target="_self" href="#summary" aria-expanded="true" class=""> <i class="fa fa-fw fa-plus-circle txt-color-green"></i>
+                            <i class="fa fa-fw fa-minus-circle txt-color-red"></i> Summary </a>
+                        </h4>
+                    </div>
+                    <div id="summary" class="panel-collapse collapse in" aria-expanded="true">
+                        <div class="panel-body">
+                            <h1>TODO</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" target="_self" href="#profile" class="collapsed" aria-expanded="false"> <i class="fa fa-fw fa-plus-circle txt-color-green"></i>
+                            <i class="fa fa-fw fa-minus-circle txt-color-red"></i> Company Profile </a></h4>
+                    </div>
+                    <div id="profile" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        <div class="panel-body">
+                            <div class="col-sm-12">
+                                <h1><span class="semi-bold">{{ symbol.company }}</span>&nbsp;&nbsp;&nbsp; <small>{{ symbol.symbol }}</small></h1>
+
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <p class="text-muted">
+                                            <i class="fa fa-phone"></i>&nbsp;&nbsp;<span class="txt-color-darken">{{ symbol.profile.phone }}</span>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p class="text-muted">
+                                            <i class="fa fa-link"></i>&nbsp;&nbsp;<a target="_blank" href="{{ symbol.profile.website }}">{{ symbol.profile.website }}</a>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p class="text-muted">
+                                            <i class="fa fa-location-arrow"></i>&nbsp;&nbsp;
+                                            <span class="txt-color-darken">
+                                                {{ symbol.profile.address }}, {{ symbol.profile.city }}, {{ symbol.profile.state }}, {{ symbol.profile.zipcode }}, {{ symbol.profile.country }}
+                                            </span>
+                                        </p>
+                                    </li>
+                                </ul>
+                                <hr>
+                            </div>
+                            <div class="col-sm-6">
+                                {{ symbol.profile.summary }}
+                                <p class="font-md">
+
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Title</th>
+                                                <th>Age</th>
+                                                <th>Salary</th>
+                                                <th>Exercised</th>
+                                                <th>UnExercised</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="officer in symbol.profile.officers">
+                                                <td>{{ officer.name }}</td>
+                                                <td>{{ officer.title }}</td>
+                                                <td>{{ officer.age }}</td>
+                                                <td>{{ officer.salary }}</td>
+                                                <td>{{ officer.exercised_value }}</td>
+                                                <td>{{ officer.unexercised_value }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" target="_self" href="#financials" class="collapsed" aria-expanded="false"> <i class="fa fa-fw fa-plus-circle txt-color-green"></i>
+                            <i class="fa fa-fw fa-minus-circle txt-color-red"></i> Financials </a></h4>
+                    </div>
+                    <div id="financials" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        <div class="panel-body">
+                            <h1>TODO</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" target="_self" href="#holders" class="collapsed" aria-expanded="false"> <i class="fa fa-fw fa-plus-circle txt-color-green"></i>
+                            <i class="fa fa-fw fa-minus-circle txt-color-red"></i> Holders </a></h4>
+                    </div>
+                    <div id="holders" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        <div class="panel-body">
+                            <h1>TODO</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h1 style="float: left"><strong>News </strong></h1>
+                <div id="sparks" style="display: block; list-style: none; margin: 10px 0 0; padding: 0; text-align: right">
+                    <ul>
+                        <li class="sparks-info"><i class="fa fa-newspaper-o smart-timeline-icon bg-color-greenDark" style="position: inherit !important;"></i>  <strong>News</strong></li>
+                        <li class="sparks-info"><i class="fa fa-users smart-timeline-icon" style="position: inherit !important;"></i>  <strong>Public Relations</strong></li>
+                        <li class="sparks-info"><i class="fa fa-video-camera smart-timeline-icon bg-color-orangeDark" style="position: inherit !important;"></i>  <strong>Video</strong></li>
+                    </ul>
+                </div>
+                <div class="well well-sm">
+                    <!-- Timeline Content -->
+                    <div class="smart-timeline">
+                        <ul class="smart-timeline-list">
+                            <li ng-repeat="news in symbol.news">
+                                <div ng-if="news.tag == 'news'" class="smart-timeline-icon bg-color-greenDark">
+                                    <i class="fa fa-newspaper-o"></i>
+                                </div>
+                                <div ng-if="news.tag == 'pr'" class="smart-timeline-icon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <div ng-if="news.tag == 'video'" class="smart-timeline-icon bg-color-orangeDark">
+                                    <i class="fa fa-video-camera"></i>
+                                </div>
+                                <div class="smart-timeline-time">
+                                    <small>{{news.publisher_time * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</small>
+                                </div>
+                                <div class="smart-timeline-content">
+                                    <p>
+                                        <a target="_blank" href="{{ news.url }}"><strong>{{ news.title }}</strong></a><br>
+                                        <span><strong>By: </strong></span><span>{{ news.author }}</span><br>
+                                        <span><strong>Publisher: </strong>{{ news.publisher }}</span><br>
+                                        <span><strong>Sentiment Analysis: </strong></span><span class="badge badge-warning">{{ news.sentiment_analysis }}</span>
+                                    </p>
+                                    <p>{{ news.summary }}</p>
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- END Timeline Content -->
+                </div>
+
+            </div>
+        </div>
+        <!-- end widget content -->
+
+    </div>
+    <!-- end widget div -->
+
+</div>
+</article>
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3">
+        <article >
+    <div class="jarviswidget jarviswidget-color-blueLight" id="wid-id-10" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false" role="widget">
+
+    <header role="heading">
+        <span class="widget-icon"> <i class="fa fa-sticky-note"></i> </span>
+        <h2>
+            <span><strong>Notes</strong></span>
+        </h2>
+
+    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+    <!-- widget div-->
+    <div role="content">
+
+        <!-- widget edit box -->
+        <div class="jarviswidget-editbox">
+            <!-- This area used as dropdown edit box -->
+
+        </div>
+        <!-- end widget edit box -->
+
+        <!-- widget content -->
+        <div class="widget-body no-padding">
+            <ul>
+                <li ng-repeat="note in symbol.notes">
+                    Type: {{ note.type }} <br>
+                    Title: {{ note.title }} <br>
+                    Value: {{ note.value }} <br>
+                </li>
+            </ul>
+        </div>
+        <!-- end widget content -->
+
+    </div>
+    <!-- end widget div -->
+
+</div>
+</article>
+        <article>
+            <div class="jarviswidget jarviswidget-color-blueLight" id="wid-id-10" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false" role="widget">
+
+    <header role="heading">
+        <span class="widget-icon"> <i class="fa fa-paperclip"></i> </span>
+        <h2>
+            <span><strong>Links</strong></span>
+        </h2>
+
+    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+    <!-- widget div-->
+    <div role="content">
+
+        <!-- widget edit box -->
+        <div class="jarviswidget-editbox">
+            <!-- This area used as dropdown edit box -->
+
+        </div>
+        <!-- end widget edit box -->
+
+        <!-- widget content -->
+        <div class="widget-body no-padding">
+
+        </div>
+        <!-- end widget content -->
+
+    </div>
+    <!-- end widget div -->
+
+</div>
+        </article>
+    </div>
+
+
+
+
+</div>
+
+{% endverbatim %}

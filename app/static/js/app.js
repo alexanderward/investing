@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap', 'nvd3', 'ngTable'])
+var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap', 'nvd3', 'ngTable', 'angularjs-dropdown-multiselect'])
     .config(['$urlRouterProvider','$stateProvider', function($urlRouterProvider, $stateProvider) {
         $urlRouterProvider.otherwise('/');
         $stateProvider

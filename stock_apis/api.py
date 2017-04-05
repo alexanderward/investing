@@ -9,7 +9,7 @@ def get_stock_statistics(symbol):
     return yahoo.get_statistics(symbol)
 
 
-def get_news(symbol):
+def get_stock_news(symbol):
     yahoo = YahooFinance()
     return yahoo.get_news(symbol)
 
