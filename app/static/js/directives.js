@@ -244,9 +244,25 @@ app.directive('stockDetails', function(SymbolsService, NgTableParams, $filter){
     return {
         restrict: 'E', //E = element, A = attribute, C = class, M = comment
         link: function(scope, element, attrs){
-            // scope.$watch('data', function() {
-            //     console.log(scope.symbol);
+            var total;
+            if(typeof scope.symbol == 'undefined'){
+                total = 0;
+            }else{
+                total = scope.symbol.portfolio.transactions.length;
+            }
+
+
+            // scope.transactionTableParams = new NgTableParams({
+            //     page: 1,
+            //     count: 10
+            // }, {
+            //     total: total,
+            //     getData: function ($defer, params) {
+            //         // scope.data = scope.symbol.portfolio.transactions.slice((params.page() - 1) * params.count(), params.page() * params.count());
+            //         $defer.resolve(scope.data);
+            //     }
             // });
+
         },
         scope: {
             symbol: '='
@@ -434,6 +450,114 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
                     faIcon: 'fa-bar-chart'
                 }
             }
+        },
+        movingAverage: {
+            ordering: '-moving_average',
+            promise: function(ordering, filters, paginationCount, pageNumber){
+                return SymbolsService.list(ordering, filters, paginationCount, pageNumber)
+            },
+            table:{
+                    columns : [
+                        // http://plnkr.co/edit/lO8FhO?p=preview  Also allows subfield for nested objects
+                        { id: 1, label: 'Symbol', field: 'symbol', visible: true, filterType: 'string'},
+                        { id: 2, label: 'Company', field: 'company', visible: true, filterType: 'string'},
+                        { id: 3, label: 'Sector', field: 'sector', visible: true, filterType: 'string'},
+                        { id: 4, label: 'Industry', field: 'industry', visible: true, filterType: 'string'},
+                        { id: 5, label: 'Moving Average', field: 'moving_average', visible: true, filterType: 'number'},
+                        { id: 6, label: 'Average Volume', field: 'average_volume', visible: true, filterType: 'number'},
+                        { id: 7, label: 'Market Cap', field: 'market_cap', visible: true, filterType: 'number'},
+                        { id: 8, label: 'Last Close', field: 'last_close', visible: true, filterType: 'number'}
+                    ]
+            },
+            graphs: {
+                pie: {
+                    options: function(caption){
+                        return {
+                            caption: {
+                                enable: true,
+                                text: caption,
+                                css: {
+                                    width: null,
+                                    textAlign: 'center'
+                                }
+                            },
+                            chart: {
+                                type: 'pieChart',
+                                height: 500,
+                                x: function(d){return d.key;},
+                                y: function(d){return d.y;},
+                                showLabels: true,
+                                duration: 500,
+                                labelThreshold: 0.01,
+                                labelSunbeamLayout: true,
+                                legendPosition: 'bottom',
+                                legend: {
+                                    margin: {
+                                        top: 5,
+                                        right: 35,
+                                        bottom: 5,
+                                        left: 0
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    dataConversion:function(data){
+                        var graphResults = [];
+                        $.each(data, function (index, symbol_object) {
+                            graphResults.push({key: symbol_object.symbol, 'y': symbol_object.moving_average});
+                        });
+                        return graphResults
+                    },
+                    faIcon: 'fa-pie-chart'
+                },
+                discreteBar: {
+                    options: function(caption){
+                return {
+                    caption: {
+                        enable: true,
+                        text: caption,
+                        css: {
+                            width: null,
+                            textAlign: 'center'
+                        }
+                    },
+                    chart: {
+            type: 'discreteBarChart',
+            height: 450,
+            margin : {
+                top: 20,
+                right: 20,
+                bottom: 50,
+                left: 55
+            },
+            x: function(d){return d.label;},
+            y: function(d){return d.value + (1e-10);},
+            showValues: true,
+            valueFormat: function(d){
+                return d3.format(',.4f')(d);
+            },
+            duration: 500,
+            xAxis: {
+                axisLabel: 'Stocks'
+            },
+            yAxis: {
+                axisLabel: 'Moving Average',
+                axisLabelDistance: -10
+            }
+        }
+                }
+            },
+                    dataConversion: function(data){
+                    var graphResults = [];
+                    $.each(data, function (index, symbol_object) {
+                        graphResults.push({label: symbol_object.symbol, 'value': symbol_object.moving_average});
+                    });
+                    return [{key: '', values: graphResults}]
+                },
+                    faIcon: 'fa-bar-chart'
+                }
+            }
         }
     };
 
@@ -444,18 +568,17 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
             var source = $attrs.source;
             $scope.title = $attrs.title;
             var caption = $attrs.caption;
-            var graphType;
 
             if (! _.has(graphTableMap, source)){
                 throw new TypeError("Must include valid graph source.  Valid options: " + Object.keys(graphTableMap).join(","));
             }
             if (typeof $attrs.default == 'undefined'){
-                graphType = Object.keys(graphTableMap)[0];
+                $scope.graphType = Object.keys(graphTableMap)[0];
             }else{
-                graphType = $attrs.default;
+                $scope.graphType = $attrs.default;
             }
             var dataSource = graphTableMap[source];
-            $scope.graphDetails = dataSource.graphs[graphType];
+            $scope.graphDetails = dataSource.graphs[$scope.graphType];
 
             if (typeof $scope.graphDetails == 'undefined') {
                 throw new TypeError("Must include valid default type.  Valid options: " + Object.keys(dataSource.graphs).join(","));
@@ -588,7 +711,7 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
             $scope.changeGraph = function(graph){
                 $scope.graphType = graph.type;
                 $scope.activeGraph = graph.type;
-                var dataSource = graphTableMap[$scope.source];
+                var dataSource = graphTableMap[source];
                 $scope.graphDetails = dataSource.graphs[$scope.graphType];
                 $scope.reset();
             };
@@ -613,6 +736,22 @@ app.controller('ContextMenu', [
           ['View Stock Details', function ($trScope) {
                 var symbol = $trScope.row;
                 console.log('Todo - Send to details page', symbol);
+          }],
+          null,
+          ['StockTwits', function ($trScope) {
+                var symbol = $trScope.row;
+                var link = _.find(symbol.links, function (o) {
+                    return o.title == "StockTwits"
+                });
+                if (typeof link.url != 'undefined')
+                    window.open(link.url, '_blank');
+          }],
+          ['Yahoo', function ($trScope) {
+                var symbol = $trScope.row;
+                var link = _.find(symbol.links, function (o) { return o.title == "Yahoo" });
+                if (typeof link.url != 'undefined')
+                    window.open(link.url, '_blank');
+
           }]
       ];
   }

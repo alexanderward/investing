@@ -151,6 +151,15 @@ class SymbolNews(models.Model):
     sentiment_analysis = models.IntegerField(null=True, blank=True)
 
 
+class Link(models.Model):
+    symbol_id = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    url = models.URLField()
+    link_type = models.CharField(max_length=255, null=True, blank=True)  # generated / user
+
+
 class Symbol(models.Model):
     # https://api.robinhood.com/instruments/09bc1a2d-534d-49d4-add7-e0eb3be8e640/
     symbol = models.CharField(max_length=15, unique=True, db_index=True)
@@ -172,6 +181,7 @@ class Symbol(models.Model):
     notes = models.ManyToManyField(Note, null=True)
     news = models.ManyToManyField(SymbolNews, null=True)
     profile = models.ForeignKey(SymbolProfile, null=True)
+    links = models.ManyToManyField(Link, null=True)
 
     def __str__(self):
         return self.symbol
@@ -193,13 +203,6 @@ class SymbolHistory(models.Model):
 class Position(models.Model):
     user = models.ForeignKey(User)
     # todo
-
-
-class Link(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    url = models.URLField()
 
 
 class Article(models.Model):

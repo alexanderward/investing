@@ -1,9 +1,10 @@
 from copy import deepcopy
 
+from django.db.models import Q
 from django.forms import model_to_dict
 from rest_framework import serializers
 from app.models import Definition, Financial, User, SymbolHistory, Symbol, Note, NoteTypes, SymbolProfile, \
-    SymbolOfficers, SymbolNews
+    SymbolOfficers, SymbolNews, Link
 
 
 class UserProfileSerializer(serializers.Serializer):
@@ -99,6 +100,13 @@ class NoteSerializer(serializers.Serializer):
         fields = '__all__'
 
 
+class LinksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Link
+        fields = '__all__'
+        ordering = ('title',)
+
+
 class SymbolNewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SymbolNews
@@ -137,12 +145,22 @@ class SymbolSerializer(serializers.Serializer):
     market_cap = serializers.FloatField()
     listed = serializers.BooleanField()
     growth_rate = serializers.FloatField()
+    last_close = serializers.FloatField()
+    moving_average = serializers.FloatField()
+    average_volume = serializers.FloatField()
     notes = NoteSerializer(many=True)
     profile = SymbolProfileSerializer(read_only=True)
     news = SymbolNewsSerializer(many=True)
+    links = serializers.SerializerMethodField('get_links_')
 
     class Meta:
         model = Symbol
+
+    def get_links_(self, obj):
+        user = self.context.get('user')
+        links = obj.links.filter(Q(user__isnull=True) | Q(user=user))
+        return LinksSerializer(links, many=True).data
+
 
 
 class SymbolHistorySerializer(serializers.Serializer):

@@ -178,6 +178,7 @@ class SymbolViewset(GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         pk = self.kwargs.get('pk')
+        context = {'user': self.request.user}
         if not pk.isdigit():
             queryset = queryset.filter(symbol=pk)
         else:
@@ -186,7 +187,7 @@ class SymbolViewset(GenericViewSet):
         if not queryset:
             raise Http404
 
-        serializer = self.serializer_class(queryset.first())
+        serializer = self.serializer_class(queryset.first(), context=context)
         return JSONResponse(serializer.data)
 
 

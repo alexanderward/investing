@@ -4,6 +4,8 @@ import urllib
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+from app.exceptions import StockDoesNotExist
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import datetime
 
@@ -48,6 +50,7 @@ class Source(object):
         url = self.url
         if self.parameters:
             url = url + '?' + self.parameters
+        print url
         req = requests.get(url)
         assert req.status_code == 200
         content_type = req.headers.get('Content-Type', "")
@@ -56,6 +59,8 @@ class Source(object):
         elif 'application/json' in content_type:
             return req.json()
         return req.content
+        # else:
+        #     raise StockDoesNotExist('\nStatus code: %s\n Content: %s' % (req.status_code, req.content))
 
 
 class Google(Source):

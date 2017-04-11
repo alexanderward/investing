@@ -9,3 +9,36 @@
     font-size: 20px;
     color: #eee;
 }
+
+.link-ul{
+    margin-bottom: 14px;
+    list-style: none;
+    margin-left: -35px;
+    margin-top: 5px;
+}
+.link-li{
+    margin: 0 0 7px 0;
+}
+
+.link-li a{
+    display: block;
+    margin: 0 0 7px 0;
+    background: #F7F5F2 center no-repeat;
+    font-size: 18px;
+    color: #333;
+    padding: 5px 0 0 20px;
+    text-decoration: none;
+}
+
+.link-li a:hover{
+    background-color: #EFEFEF;
+}
+.orange { border-left: 5px solid #F5876E; }
+
+.blue{ border-left: 5px solid #61A8DC; }
+
+.green{ border-left: 5px solid #8EBD40; }
+
+.purple { border-left: 5px solid #988CC3; }
+
+.gold { border-left: 5px solid #D8C86E; }

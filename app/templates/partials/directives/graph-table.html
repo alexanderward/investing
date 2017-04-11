@@ -66,7 +66,10 @@
                     'sort-desc': tableParams.isSortBy(column.field, 'desc')
                   }"
                 ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
-                <div class="sort-indicator">{{column.label}}</div>
+                <div class="sort-indicator">
+                    <a ng-click="test();$event.stopPropagation()" class="btn btn-sm bg-color-blueLight txt-color-green" style="float:left;"><i class="fa fa-area-chart fa-lg"></i></a>
+
+                    {{column.label}} </div>
             </th>
         </tr>
         </thead>
