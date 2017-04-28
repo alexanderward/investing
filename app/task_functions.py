@@ -1,8 +1,11 @@
 import datetime
+import pprint
 
+import operator
 import requests
 from celery.utils.log import get_task_logger
 from django.db import transaction
+from django.db.models import Q
 
 debug = True
 if debug:
@@ -13,7 +16,8 @@ if debug:
     import django
 
     django.setup()
-from app.models import SymbolHistory, Financial, Symbol, SymbolOfficers, SymbolProfile, SymbolNews, Link, User
+from app.models import SymbolHistory, Financial, Symbol, SymbolOfficers, SymbolProfile, SymbolNews, Link, User, \
+    RobinHoodTransaction, RobinHoodTransactionExecutions, RobinHoodPositions
 from robinhood import RobinHood
 from stock_apis.api import get_listed_companies, get_historic, get_stock_statistics, get_stock_news
 from bulk_update.helper import bulk_update
@@ -24,9 +28,9 @@ logger = get_task_logger(__name__)
 
 class UserFinances(object):
     @staticmethod
-    def get_user_financials(user):
-        rh = RobinHood()
+    def get_user_balance(user):
         if user.rh_token:
+            rh = RobinHood()
             logger.info("Starting: Getting financials for %s" % user.email)
             rh.api_token = "Token %s" % user.rh_token
             balance = rh.get_account_balance()
@@ -37,32 +41,165 @@ class UserFinances(object):
             logger.info("Finished: Getting financials for %s" % user.email)
 
     @staticmethod
-    def get_user_positions(user):
-        pass
-        # email = 'alexander.ward1@gmail.com'
-        # logger.info("Starting: Getting financials for %s" % email)
-        # user = User.objects.get(email=email)
-        # rh = RobinHood()
-        # if not user.rh_token:
-        #     username, password = get_robinhood_creds()
-        #     assert rh.login(username, password)
-        # else:
-        #     rh.api_token = user.rh_token
-        # positions = rh.get_positions()
-        # [{u'account': u'https://api.robinhood.com/accounts/5RY40845/',
-        #   u'average_buy_price': u'56.5200',
-        #   u'created_at': u'2017-02-17T18:33:02.718556Z',
-        #   u'instrument': u'https://api.robinhood.com/instruments/09bc1a2d-534d-49d4-add7-e0eb3be8e640/',
-        #   u'intraday_average_buy_price': u'0.0000',
-        #   u'intraday_quantity': u'0.0000',
-        #   u'quantity': u'2.0000',
-        #   u'shares_held_for_buys': u'0.0000',
-        #   u'shares_held_for_sells': u'2.0000',
-        #   u'updated_at': u'2017-02-17T20:30:29.555872Z',
-        #   u'url': u'https://api.robinhood.com/accounts/5RY40845/positions/09bc1a2d-534d-49d4-add7-e0eb3be8e640/'},
-        # ]
-        # logger.info("Finished: Getting positions for %s" % email)
+    @transaction.atomic()
+    def retrieve_user_positions(user):
+        if user.rh_token:
+            rh = RobinHood()
+            logger.info("Starting: Getting financials for %s" % user.email)
+            rh.api_token = "Token %s" % user.rh_token
+            positions = rh.get_positions()
+            RobinHoodPositions.objects.filter(user=user).delete()
+            new_positions = []
+            for position in positions:
+                if float(position.get('quantity')):
+                    try:
+                        symbol = Symbol.objects.get(rh_href=position.get('instrument'))
+                    except Symbol.DoesNotExist:
+                        results = rh.GET(position.get('instrument'))
+                        if results.status_code == 200:
+                            symbol_name = results.json()['symbol']
+                            symbol = Symbol.objects.create(symbol=symbol_name)
+                        else:
+                            raise ValueError(
+                                'Unable to retrieve %s. Status code: %s' % (position.get('instrument'),
+                                                                            results.status_code))
+                    rh_position = RobinHoodPositions.objects.create(
+                        user=user,
+                        symbol=symbol,
+                        quantity=position.get('quantity'),
+                        created_at=position.get('created_at'),
+                        updated_at=position.get('updated_at'),
+                        average_buy_price=position.get('average_buy_price')
+                    )
+                    new_positions.append(rh_position)
+            return new_positions
 
+    @staticmethod
+    def get_user_positions(user):
+        return RobinHoodPositions.objects.filter(user=user)
+
+    @staticmethod
+    def get_user_positions_for_symbol(user, symbol):
+        if isinstance(symbol, basestring):
+            symbol = Symbol.objects.get(symbol=symbol)
+        return RobinHoodPositions.objects.filter(user=user, symbol=symbol)
+
+    @staticmethod
+    @transaction.atomic()
+    def retrieve_user_transactions_from_rh(user):
+        if user.rh_token:
+            rh = RobinHood()
+            logger.info("Starting: Getting financials for %s" % user.email)
+            rh.api_token = "Token %s" % user.rh_token
+            transactions = rh.get_transactions()
+            instrument_links = transactions.keys()
+            db_map = Symbol.objects.filter(rh_href__in=instrument_links).values_list('symbol', 'rh_href')
+
+            lookup_table = dict()
+
+            for symbol, rh_href, in db_map:
+                lookup_table[rh_href] = symbol
+
+            final_dict = dict()
+            lookup_table_reverse = dict()
+            for instrument_link, records in transactions.iteritems():
+                symbol = lookup_table.get(instrument_link, None)
+                if not symbol:
+                    results = rh.GET(instrument_link)
+                    if results.status_code == 200:
+                        symbol = results.json()['symbol']
+                    else:
+                        raise ValueError(
+                            'Unable to retrieve %s. Status code: %s' % (instrument_link, results.status_code))
+                final_dict[symbol] = records
+                lookup_table_reverse[symbol] = instrument_link
+
+            symbol_updates = []
+            for transaction_symbol, transactions in final_dict.iteritems():
+                symbol, created = Symbol.objects.get_or_create(symbol=transaction_symbol)
+                symbol.rh_href = lookup_table_reverse[transaction_symbol]
+                symbol_updates.append(symbol)
+
+                for transaction_instance in transactions:
+                    rh_transaction, created = RobinHoodTransaction.objects.get_or_create(
+                        user=user,
+                        symbol=symbol,
+                        created_at=transaction_instance.get('created_at'),
+                        rh_id=transaction_instance.get('id'),
+                        average_price=transaction_instance.get('average_price'),
+                        cumulative_quantity=transaction_instance.get('cumulative_quantity'),
+                        state=transaction_instance.get('state'),
+                        price=transaction_instance.get('price'),
+                        quantity=transaction_instance.get('quantity'),
+                        stop_price=transaction_instance.get('quantity'),
+                        side=transaction_instance.get('side'),
+                        type=transaction_instance.get('type')
+                    )
+                    for execution in transaction_instance.get('executions'):
+                        execution, created = RobinHoodTransactionExecutions.objects.get_or_create(
+                            rh_transaction=rh_transaction,
+                            symbol=symbol,
+                            user=user,
+                            rh_id=execution.get('id'),
+                            quantity=execution.get('quantity'),
+                            price=execution.get('price'),
+                            settlement_date=execution.get('settlement_date'),
+                            timestamp=execution.get('timestamp')
+                        )
+            bulk_update(symbol_updates, batch_size=10)
+
+    @staticmethod
+    def get_user_transactions_for_symbol(user, symbol):
+        def calculate_net_investment(trans_dict):
+            total = 0
+            buy_quantity = 0
+            sell_quantity = 0
+            try:
+                position = RobinHoodPositions.objects.get(user=user, symbol=symbol)
+                outstanding_position_quantity = position.quantity
+            except RobinHoodPositions.DoesNotExist:
+                outstanding_position_quantity = 0
+            for instance in trans_dict['buy']:
+                if outstanding_position_quantity:
+                    outstanding_position_quantity -= instance.cumulative_quantity
+                    if outstanding_position_quantity >= 0:
+                        instance.cumulative_quantity = 0
+                total -= (instance.average_price * instance.cumulative_quantity)
+                buy_quantity += instance.cumulative_quantity
+            for instance in trans_dict['sell']:
+                total += (instance.average_price * instance.cumulative_quantity)
+                sell_quantity += instance.cumulative_quantity
+
+            if buy_quantity or sell_quantity:
+                return {
+                    'net': total,
+                    'difference': buy_quantity - sell_quantity,
+                    'symbol': symbol.symbol
+                }
+            return None
+
+        if isinstance(symbol, basestring):
+            symbol = Symbol.objects.get(symbol=symbol)
+
+        transactions = RobinHoodTransaction.objects.filter(user=user,
+                                                           symbol=symbol,
+                                                           cumulative_quantity__gt=0).order_by('-id')
+        transaction_dict = dict(buy=[], sell=[])
+        for transaction_instance in transactions:
+            transaction_dict[transaction_instance.side].append(transaction_instance)
+
+        return calculate_net_investment(transaction_dict)
+
+    @staticmethod
+    def get_user_transactions(user):
+        user_transaction_symbols = RobinHoodTransaction.objects.filter(user=user).values_list('symbol__symbol',
+                                                                                              flat=True).distinct()
+        results = {}
+        for symbol in user_transaction_symbols:
+            symbol_transaction = UserFinances.get_user_transactions_for_symbol(user, symbol)
+            if symbol_transaction:
+                results[symbol_transaction['symbol']] = symbol_transaction['net']
+        return results
 
 class UpdateSymbol(object):
     @staticmethod
@@ -136,7 +273,7 @@ class UpdateSymbol(object):
 
         # Super lazy method ... just drop and write everyday
         try:
-            historic_data = get_historic(symbol.symbol, now_minus_five_years)
+            historic_data, date_format = get_historic(symbol.symbol, now_minus_five_years)
             if historic_data:
                 SymbolHistory.objects.filter(symbol=symbol).delete()
 
@@ -144,7 +281,7 @@ class UpdateSymbol(object):
             for day in historic_data:
                 symbol_history_list.append(SymbolHistory(
                     symbol=symbol,
-                    date=datetime.datetime.strptime(day[0], '%d-%b-%y'),
+                    date=datetime.datetime.strptime(day[0], date_format),
                     open=None if day[1] == '-' else day[1],
                     high=None if day[2] == '-' else day[2],
                     low=None if day[3] == '-' else day[3],
@@ -178,8 +315,8 @@ class UpdateSymbol(object):
                     symbol.growth_rate = None
             else:
                 symbol.growth_rate = None
-        except Exception:
-            pass
+        except AssertionError as e:
+            print "%s:%s" % (symbol.symbol, str(e))
         return symbol
 
     @staticmethod
@@ -290,19 +427,14 @@ class SymbolCalculations(object):
 
 
 if __name__ == '__main__':
-    failed = []
-    for symbol in Symbol.objects.all():
-        print symbol
-        # try:
-        UpdateSymbol.get_symbol_profile(symbol)
-        # except:
-        #     failed.append(symbol.symbol)
-        # get_yahoo_symbol_news(Symbol.objects.get(symbol=symbol.symbol))
-    # get_stock_statistics('BBRX')
-    # get_user_positions(User.objects.get(email='alexander.ward1@gmail.com'))
-    # get_user_financials(User.objects.get(email='alexander.ward1@gmail.com'))
-    import pprint
+    from app.tasks import refresh_daily_stats
 
-    pprint.pprint(failed)
-    with open('failed.txt', 'w') as f:
-        f.write("\n".join(failed))
+    symbol = Symbol.objects.get(symbol='NUGT')
+    user = User.objects.first()
+    # print RobinHoodTransaction.objects.all().count()
+    # UserFinances.retrieve_user_transactions_from_rh(user)
+    pprint.pprint(sorted(UserFinances.get_user_transactions(user).items(), key=operator.itemgetter(1), reverse=True) )
+    # print UserFinances.get_user_transactions_for_symbol(user, symbol)
+    # print UserFinances.retrieve_user_positions(user)
+    # print UserFinances.get_user_positions_for_symbol(user, symbol)
+

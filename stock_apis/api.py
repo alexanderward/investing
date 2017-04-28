@@ -20,10 +20,10 @@ def get_comments(symbol):
 
 
 def get_historic(symbol, from_date):
-    # ichart = IChart()
-    # return ichart.get_symbol(symbol, from_date=from_date)
-    google = Google()
-    return google.get_symbol(symbol, from_date=from_date)
+    ichart = IChart()
+    return ichart.get_symbol(symbol, from_date=from_date), '%Y-%m-%d'
+    # google = Google()
+    # return google.get_symbol(symbol, from_date=from_date), '%d-%b-%y'
 
 
 def get_listed_companies():

@@ -23,6 +23,7 @@ class RobinHood(object):
             'account': 'accounts/',
             'portfolio': self.portfolio_link,
             'positions': self.positions_link,
+            'transactions': 'orders/'
         }
         uri = urls.get(name)
         assert uri
@@ -38,11 +39,12 @@ class RobinHood(object):
 
         self.account_balance_data = dict(available_funds=None, funds_held_for_orders=None, value=None)
         self.positions = dict()
+        self.transactions = dict()
 
-    def __GET(self, url, data=""):
+    def GET(self, url, data=""):
         return requests.get(url, headers={'Authorization': self.api_token})
 
-    def __POST(self, url, data={}):
+    def POST(self, url, data={}):
         assert isinstance(data, dict)
         return requests.post(url, headers={'Authorization': self.api_token, 'content-type': 'application/json'},
                              data=data)
@@ -59,14 +61,14 @@ class RobinHood(object):
 
     def logout(self):
         url = self.build_url('logout')
-        req = self.__POST(url)
+        req = self.POST(url)
         if req.status_code == 200:
             return True
         return False
 
     def build_account_links(self):
         url = self.build_url('account', check=False)
-        req = self.__GET(url)
+        req = self.GET(url)
         if req.status_code == 200:
             data = req.json().get('results')[0]
             self.portfolio_link = data.get('portfolio')
@@ -85,7 +87,7 @@ class RobinHood(object):
         rebuilt_links = self.rebuilt_links
         url = self.build_url('account')
         if rebuilt_links == self.rebuilt_links:
-            req = self.__GET(url)
+            req = self.GET(url)
             if req.status_code == 200:
                 data = req.json().get('results')[0]
                 self.__set_account_balance(data)
@@ -95,7 +97,7 @@ class RobinHood(object):
                 raise Exception(req.text)
 
         url = self.build_url('portfolio')
-        req = self.__GET(url)
+        req = self.GET(url)
         if req.status_code == 200:
             data = req.json()
             self.account_balance_data['value'] = data.get('equity')  # maybe use extended_hours_equity after hours...
@@ -106,19 +108,48 @@ class RobinHood(object):
 
         return self.account_balance_data
 
-    def get_positions(self):
-        url = self.build_url('positions')
-        req = self.__GET(url)
+    def get_positions(self, url=None):
+        if not url:
+            url = self.build_url('positions')
+        req = self.GET(url)
+        results = []
         if req.status_code == 200:
             data = req.json().get('results')
-            self.positions = data
+            results.extend(data)
+            next_url = req.json().get('next')
+            if next_url:
+                next_results = self.get_positions(next_url)
+                results.extend(next_results)
+            return results
         elif req.status_code == 401:
             raise NotLoggedIn(req.text)
         else:
             raise Exception(req.text)
 
-        return self.positions
-
+    def get_transactions(self, url=None):
+        if not url:
+            url = self.build_url('transactions')
+        req = self.GET(url)
+        results = {}
+        if req.status_code == 200:
+            data = req.json().get('results')
+            for record in data:
+                if record['instrument'] not in results:
+                    results[record['instrument']] = []
+                results[record['instrument']].append(record)
+            next_url = req.json().get('next')
+            if next_url:
+                next_results = self.get_transactions(next_url)
+                for instrument, value in next_results.iteritems():
+                    if instrument not in results:
+                        results[instrument] = value
+                    else:
+                        results[instrument].extend(value)
+            return results
+        elif req.status_code == 401:
+            raise NotLoggedIn(req.text)
+        else:
+            raise Exception(req.text)
 
 if __name__ == '__main__':
     rh = RobinHood()

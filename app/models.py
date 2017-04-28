@@ -183,8 +183,43 @@ class Symbol(models.Model):
     profile = models.ForeignKey(SymbolProfile, null=True)
     links = models.ManyToManyField(Link, null=True)
 
+    rh_href = models.URLField(null=True, unique=True)
+
     def __str__(self):
         return self.symbol
+
+
+class RobinHoodTransaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    symbol = models.ForeignKey(Symbol, on_delete=models.CASCADE)
+    created_at = models.DateTimeField()
+    rh_id = models.CharField(max_length=255, unique=True)
+
+    average_price = models.FloatField(null=True)
+    cumulative_quantity = models.FloatField(null=True)
+
+    state = models.CharField(max_length=25)  # cancelled, filled
+    price = models.FloatField(null=True)
+    quantity = models.FloatField(null=True)
+    stop_price = models.FloatField(null=True)
+
+    side = models.CharField(max_length=255)  # sell, buy
+    type = models.CharField(max_length=255)  # limit
+
+    def __str__(self):
+        return "Symbol: %s - %s:%s (%s)- #%s @ %s" % (self.symbol.symbol, self.type, self.side, self.state,
+                                                      self.cumulative_quantity, self.average_price)
+
+
+class RobinHoodTransactionExecutions(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    symbol = models.ForeignKey(Symbol, on_delete=models.CASCADE)
+    rh_transaction = models.ForeignKey(RobinHoodTransaction, on_delete=models.CASCADE)
+    rh_id = models.CharField(max_length=100, unique=True)
+    price = models.FloatField()
+    quantity = models.FloatField()
+    settlement_date = models.DateField()
+    timestamp = models.DateTimeField()
 
 
 class SymbolHistory(models.Model):
@@ -200,9 +235,16 @@ class SymbolHistory(models.Model):
         return self.symbol.symbol
 
 
-class Position(models.Model):
+class RobinHoodPositions(models.Model):
     user = models.ForeignKey(User)
-    # todo
+    symbol = models.ForeignKey(Symbol, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    average_buy_price = models.FloatField()
+
+    def __str__(self):
+        return "Symbol: %s %s @ %s" % (self.symbol.symbol, self.quantity, self.average_buy_price)
 
 
 class Article(models.Model):
@@ -216,7 +258,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=255)
     notes = models.ManyToManyField(Note, related_name='tags', blank=True)
     definitions = models.ManyToManyField(Definition, related_name='tags', blank=True)
-    positions = models.ManyToManyField(Position, related_name='tags', blank=True)
+    positions = models.ManyToManyField(RobinHoodPositions, related_name='tags', blank=True)
     links = models.ManyToManyField(Link, related_name='tags', blank=True)
 
     # Definition.objects.filter(tags__name="your_tag_name")
