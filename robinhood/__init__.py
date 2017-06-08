@@ -56,6 +56,7 @@ class RobinHood(object):
         if req.status_code == 200:
             data = req.json()
             self.api_token = "Token %s" % data.get('token')
+            print self.api_token
             return True
         return False
 
@@ -156,7 +157,7 @@ if __name__ == '__main__':
     from creds import get_robinhood_creds
 
     username, password = get_robinhood_creds()
-    assert rh.login(username, password)
+    assert rh.login('sivad77', 'qweQWE123*')
     # rh.logout()
     import pprint
 

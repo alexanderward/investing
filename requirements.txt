@@ -9,3 +9,5 @@ celery==3.1.25
 django-celery==3.2.1
 django-filter==1.0.1
 django-bulk-update==1.1.10
+psycopg2==2.5.3
+redis==2.10.5

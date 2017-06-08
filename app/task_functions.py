@@ -1,3 +1,4 @@
+import collections
 import datetime
 import pprint
 
@@ -28,7 +29,7 @@ logger = get_task_logger(__name__)
 
 class UserFinances(object):
     @staticmethod
-    def get_user_balance(user):
+    def retrieve_user_balance(user):
         if user.rh_token:
             rh = RobinHood()
             logger.info("Starting: Getting financials for %s" % user.email)
@@ -58,7 +59,7 @@ class UserFinances(object):
                         results = rh.GET(position.get('instrument'))
                         if results.status_code == 200:
                             symbol_name = results.json()['symbol']
-                            symbol = Symbol.objects.create(symbol=symbol_name)
+                            symbol, created = Symbol.objects.get_or_create(symbol=symbol_name)
                         else:
                             raise ValueError(
                                 'Unable to retrieve %s. Status code: %s' % (position.get('instrument'),
@@ -121,20 +122,25 @@ class UserFinances(object):
                 symbol_updates.append(symbol)
 
                 for transaction_instance in transactions:
-                    rh_transaction, created = RobinHoodTransaction.objects.get_or_create(
-                        user=user,
-                        symbol=symbol,
-                        created_at=transaction_instance.get('created_at'),
-                        rh_id=transaction_instance.get('id'),
-                        average_price=transaction_instance.get('average_price'),
-                        cumulative_quantity=transaction_instance.get('cumulative_quantity'),
-                        state=transaction_instance.get('state'),
-                        price=transaction_instance.get('price'),
-                        quantity=transaction_instance.get('quantity'),
-                        stop_price=transaction_instance.get('quantity'),
-                        side=transaction_instance.get('side'),
-                        type=transaction_instance.get('type')
-                    )
+                    rh_transaction = RobinHoodTransaction.objects.filter(rh_id=transaction_instance.get('id')).first()
+                    if rh_transaction:
+                        rh_transaction.created_at = transaction_instance.get('created_at')
+                        rh_transaction.save()
+                    else:
+                        rh_transaction = RobinHoodTransaction.objects.create(
+                            user=user,
+                            symbol=symbol,
+                            rh_id=transaction_instance.get('id'),
+                            created_at=transaction_instance.get('created_at'),
+                            average_price=transaction_instance.get('average_price'),
+                            cumulative_quantity=transaction_instance.get('cumulative_quantity'),
+                            state=transaction_instance.get('state'),
+                            price=transaction_instance.get('price'),
+                            quantity=transaction_instance.get('quantity'),
+                            stop_price=transaction_instance.get('quantity'),
+                            side=transaction_instance.get('side'),
+                            type=transaction_instance.get('type')
+                        )
                     for execution in transaction_instance.get('executions'):
                         execution, created = RobinHoodTransactionExecutions.objects.get_or_create(
                             rh_transaction=rh_transaction,
@@ -156,23 +162,25 @@ class UserFinances(object):
             sell_quantity = 0
             try:
                 position = RobinHoodPositions.objects.get(user=user, symbol=symbol)
-                outstanding_position_quantity = position.quantity
+                outstanding_value = position.quantity * position.average_buy_price
             except RobinHoodPositions.DoesNotExist:
-                outstanding_position_quantity = 0
+                outstanding_value = 0
             for instance in trans_dict['buy']:
-                if outstanding_position_quantity:
-                    outstanding_position_quantity -= instance.cumulative_quantity
-                    if outstanding_position_quantity >= 0:
-                        instance.cumulative_quantity = 0
+                # if outstanding_position_quantity:
+                #     outstanding_position_quantity -= instance.cumulative_quantity
+                #     if outstanding_position_quantity >= 0:
+                #         instance.cumulative_quantity = 0
                 total -= (instance.average_price * instance.cumulative_quantity)
                 buy_quantity += instance.cumulative_quantity
             for instance in trans_dict['sell']:
                 total += (instance.average_price * instance.cumulative_quantity)
                 sell_quantity += instance.cumulative_quantity
 
+
+
             if buy_quantity or sell_quantity:
                 return {
-                    'net': total,
+                    'net': total + outstanding_value,
                     'difference': buy_quantity - sell_quantity,
                     'symbol': symbol.symbol
                 }
@@ -183,11 +191,14 @@ class UserFinances(object):
 
         transactions = RobinHoodTransaction.objects.filter(user=user,
                                                            symbol=symbol,
-                                                           cumulative_quantity__gt=0).order_by('-id')
+                                                           cumulative_quantity__gt=0,
+                                                           state='filled').order_by('created_at')
+
         transaction_dict = dict(buy=[], sell=[])
         for transaction_instance in transactions:
-            transaction_dict[transaction_instance.side].append(transaction_instance)
-
+            transaction_dict[transaction_instance.side].append((transaction_instance, transaction_instance.created_at))
+            # print transaction_instance.side, transaction_instance.type, transaction_instance.state
+        pprint.pprint(transaction_dict)
         return calculate_net_investment(transaction_dict)
 
     @staticmethod
@@ -200,6 +211,7 @@ class UserFinances(object):
             if symbol_transaction:
                 results[symbol_transaction['symbol']] = symbol_transaction['net']
         return results
+
 
 class UpdateSymbol(object):
     @staticmethod
@@ -406,6 +418,11 @@ class UpdateSymbol(object):
                     symbol.profile = symbol_profile
                     symbol.save()
 
+    @staticmethod
+    @transaction.atomic
+    def get_symbol_EPS(symbol):
+        pass
+
 
 class SymbolCalculations(object):
     @staticmethod
@@ -429,12 +446,20 @@ class SymbolCalculations(object):
 if __name__ == '__main__':
     from app.tasks import refresh_daily_stats
 
-    symbol = Symbol.objects.get(symbol='NUGT')
+    symbol = Symbol.objects.get(symbol='PLUG')
+
     user = User.objects.first()
+    # user = User.objects.last()
+    print UserFinances.get_user_transactions_for_symbol(user, symbol)
     # print RobinHoodTransaction.objects.all().count()
+    # print UserFinances.retrieve_user_positions(user)
     # UserFinances.retrieve_user_transactions_from_rh(user)
-    pprint.pprint(sorted(UserFinances.get_user_transactions(user).items(), key=operator.itemgetter(1), reverse=True) )
+    # UserFinances.retrieve_user_balance(user)
+    # pprint.pprint(sorted(UserFinances.get_user_transactions(user).items(), key=operator.itemgetter(1), reverse=True) )
     # print UserFinances.get_user_transactions_for_symbol(user, symbol)
     # print UserFinances.retrieve_user_positions(user)
     # print UserFinances.get_user_positions_for_symbol(user, symbol)
 
+    # print UpdateSymbol.get_symbol_profile(symbol)
+
+    # Josh down $6,189.33

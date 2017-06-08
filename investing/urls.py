@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api/profile/', UserProfileViewset.as_view({'get': 'get_profile', 'put': 'update'})),
     url(r'^api/financials/', UserFinancialsViewset.as_view({'get': 'list'})),
+    url(r'^api/transactions/', UserFinancialsViewset.as_view({'get': 'retrieve'})),
     url(r'^api/symbols/(?P<pk>\w+)/history/$', SymbolHistoryViewset.as_view({'get': 'retrieve'})),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('app.urls', namespace='app')),

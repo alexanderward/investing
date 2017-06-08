@@ -1,4 +1,7 @@
+from collections import OrderedDict
+
 import django_filters
+import operator
 from django.conf import settings
 from rest_framework import mixins
 from rest_framework.filters import OrderingFilter
@@ -21,6 +24,21 @@ from django.contrib.auth import authenticate, login, logout
 from app.pagination import CountPagination
 from app.serializers import DictionarySerializer, FinancialsSerializer, SymbolHistorySerializer, SymbolSerializer, \
     UserProfileSerializer
+from app.task_functions import UserFinances
+
+
+def get_query_strings(request):
+    querystrings = request.META['QUERY_STRING'].split('&')
+    tmp = dict()
+    for query in querystrings:
+        if query:
+            key, value = query.split('=')
+            if value in ['false', 'False', 0]:
+                value = False
+            elif value in ['true', 'True', 1]:
+                value = True
+            tmp[key] = value
+    return tmp
 
 
 class PartialGroupView(TemplateView):
@@ -109,9 +127,20 @@ class CurrentFinancials(LoginRequiredMixin, View):
 
     def get(self, request):
         try:
+            querystrings = get_query_strings(request)
+            if querystrings.get('refresh', False):
+                UserFinances.retrieve_user_balance(request.user)
+                UserFinances.retrieve_user_positions(request.user)
+                UserFinances.retrieve_user_transactions_from_rh(request.user)
             queryset = Financial.objects.filter(user=request.user).latest('timestamp')
             serializer = FinancialsSerializer(queryset)
-            return JsonResponse(serializer.data)
+            resp = serializer.data
+            tmp = OrderedDict()
+            for symbol, value in sorted(UserFinances.get_user_transactions(request.user).items(),
+                                        key=operator.itemgetter(1), reverse=True):
+                tmp[symbol] = value
+            resp['stocks'] = tmp
+            return JsonResponse(resp)
         except Financial.DoesNotExist:
             return JSONResponse([])
 

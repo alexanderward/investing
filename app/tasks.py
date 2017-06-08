@@ -18,7 +18,7 @@ logger.setLevel(20)
 def update_robinhood_users_information():
     logger.info("Starting: Getting RobinHood User Information Task")
     for user in User.objects.all():
-        UserFinances.get_user_balance(user)
+        UserFinances.retrieve_user_balance(user)
         UserFinances.get_user_positions(user)
     logger.info("Finished: Getting RobinHood User Information Task")
 

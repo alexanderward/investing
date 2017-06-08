@@ -548,7 +548,7 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
         }
                 }
             },
-                    dataConversion: function(data){
+                dataConversion: function(data){
                     var graphResults = [];
                     $.each(data, function (index, symbol_object) {
                         graphResults.push({label: symbol_object.symbol, 'value': symbol_object.moving_average});
@@ -597,7 +597,7 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
             var enabledCols = $scope.columns.map(function (obj){
                 return {id: obj.id}
             });
-            $scope.checkbox = {
+            $scope.columnCheckbox = {
                 model: enabledCols,
                 data: $scope.columns,
                 texts: {
@@ -633,6 +633,40 @@ app.directive('tableGraph', function(SymbolsService, NgTableParams, $filter){
                             _.each($scope.columns, function(column){
                                column.visible = false;
                             });
+                        }
+                    }
+            };
+            var savedFilters = [];
+            $scope.savedFilters =  [
+                        // http://plnkr.co/edit/lO8FhO?p=preview  Also allows subfield for nested objects
+                        { id: 1, label: 'Test1'},
+                        { id: 2, label: 'Test2'},
+
+            ];
+            $scope.savedFilters = {
+                model: savedFilters,
+                data: $scope.savedFilters,
+                texts: {
+                    buttonDefaultText: 'Saved Filters'
+                },
+                settings:  {
+                    enableSearch: true,
+                    styleActive: true,
+                    dynamicTitle: false,
+                    selectionLimit: 1
+                },
+                events: {
+                        onItemSelect: function(property) {
+                            console.log('ok');
+                        },
+                        onItemDeselect: function(property) {
+
+                        },
+                        onSelectAll: function(property) {
+
+                        },
+                        onDeselectAll: function(property) {
+
                         }
                     }
             };

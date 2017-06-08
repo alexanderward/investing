@@ -1,0 +1,422 @@
+{
+    "Content": {
+        "error": null, 
+        "result": [
+            {
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": true, 
+                "id": "14f525ad-7c73-3077-a4c9-d27dfa10c1f4", 
+                "imageSet": {}, 
+                "provider_name": "Business Wire", 
+                "provider_publish_time": 1489513500, 
+                "rank": 0, 
+                "summary": "Rally your raid group and find the nearest flight path to Southern California for BlizzCon\u00ae 2017, returning to the Anaheim Convention Center on November 3 and 4! Tickets to Blizzard Entertainment\u2019s epic gaming convention and community celebration will be made available on two dates, April 5 and April 8.", 
+                "tag": "pr", 
+                "thumbnail": "http://globalfinance.zenfs.com/en_us/Finance/BUSINESSWIRE/4238d892e8abdd9e983120385074b057", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Only 234 Days Left until BlizzCon\u00ae 2017!", 
+                "url": "http://finance.yahoo.com/news/only-234-days-left-until-174500222.html"
+            }, 
+            {
+                "author_name": "Trefis Team", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "f6240319-7ef7-3c72-8281-1b0c2959a539", 
+                "imageSet": {}, 
+                "provider_name": "Forbes", 
+                "provider_publish_time": 1489495620, 
+                "rank": 1, 
+                "summary": "In 2016, Activision witnessed growth across all major platforms \u2013 PC, Mobile and Consoles. The acquisition of King Digital helped the company gain an incremental 20% in revenues and also helped it expand its footprint in Asia.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "A Closer Look At Activision Blizzard's Average Revenue Per User", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=16is7phcs/*http%3A//www.forbes.com/sites/greatspeculations/2017/03/14/a-closer-look-at-activision-blizzards-average-revenue-per-user/?utm_source=yahoo&utm_medium=partner&utm_campaign=yahootix&partner=yahootix&yptr=yahoo"
+            }, 
+            {
+                "author_name": "Adam Rogers", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "d39d7dd2-02e1-339e-af24-c996a8c649f3", 
+                "imageSet": {}, 
+                "provider_name": "Market Realist", 
+                "provider_publish_time": 1489405053, 
+                "rank": 2, 
+                "summary": "The gaming space has seen a massive transition to digitalization in the last few quarters.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "How Digital Revenue Continues to Drive Revenue for Electronic Arts", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=14ke3tr06/*http%3A//marketrealist.com/2017/03/how-digital-revenue-continues-to-drive-revenue-for-electronic-arts/?utm_source=yahoo&utm_medium=feed&yptr=yahoo"
+            }, 
+            {
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "a3ca8605-0384-3a40-b2dc-f2dc9987b047", 
+                "imageSet": {}, 
+                "provider_name": "MarketWatch", 
+                "provider_publish_time": 1489258067, 
+                "rank": 3, 
+                "summary": "Can machines make art and music that moves us? Engineers and artists are testing that notion with an array of new artificial intelligence that is expanding the boundaries of how imagery, music and videogames ...", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": " Art By Artificial Intelligence: AI Expands Into Artistic Realm", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=13nq6ijl3/*http%3A//www.marketwatch.com/News/Story/Story.aspx?guid=86071B86-FE19-4BC4-9288-24B95503B197&siteid=yhoof2&yptr=yahoo"
+            }, 
+            {
+                "author_name": "Paul Tassi", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "21cac332-1429-3f87-86dc-dd19df93815c", 
+                "imageSet": {}, 
+                "provider_name": "Forbes", 
+                "provider_publish_time": 1489167720, 
+                "rank": 4, 
+                "summary": "Blizzard is making no friends this morning with an announcement about price \u201cadjustments\u201d to the cost of Hearthstone packs around the world. The result is more or less a price hike for the vast majority of players.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "'Hearthstone' Pack Price Hike Has Players Swearing They'll Switch To 'Gwent'", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=16k1ep3s9/*http%3A//www.forbes.com/sites/insertcoin/2017/03/10/hearthstone-pack-price-hike-has-players-swearing-theyll-switch-to-gwent/?utm_source=yahoo&utm_medium=partner&utm_campaign=yahootix&partner=yahootix&yptr=yahoo"
+            }, 
+            {
+                "author_name": "Chris Lange", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": true, 
+                "id": "7afbc614-e425-37fc-aa9a-b380d1f86d46", 
+                "imageSet": {}, 
+                "provider_name": "24/7 Wall St.", 
+                "provider_publish_time": 1489164335, 
+                "rank": 5, 
+                "summary": "Video games have always been the next step in interactive media, whether you want to play a game for a compelling story with thrilling cutscenes or you just want to blow off some steam and cut through ...", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Why Merrill Lynch Is Growing More Bullish on Video Games", 
+                "url": "http://finance.yahoo.com/news/why-merrill-lynch-growing-more-164535942.html"
+            }, 
+            {
+                "author_name": "Annlee Ellingson", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "76678b4c-afeb-37da-bbb4-7986c4f79999", 
+                "imageSet": {}, 
+                "provider_name": "American City Business Journals", 
+                "provider_publish_time": 1489099506, 
+                "rank": 6, 
+                "summary": "Two Los Angeles companies and one in Orange County landed on Fortune\u2019s \u201c100 Best Companies to Work For\u201d list this year.  The Cheesecake Factory, headquartered in Calabasas, was the area\u2019s highest-ranking workplace at No. 48, followed by Activision Blizzard, based in Santa Monica, at No. 66.  First American Financial Corporation, located in Santa Ana, was No. 82.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "3 L.A.-area companies make national '100 Best Companies to Work For' list", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=144nkaq2a/*http%3A//www.bizjournals.com/losangeles/news/2017/03/09/cheesecake-factory-activision-blizzard-make-list.html?ana=yahoo&yptr=yahoo"
+            }, 
+            {
+                "author_name": "newsfeedback@fool.com (Demitrios Kalogeropoulos, Anders Bylund, and Steve Symington)", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "5b0b96b4-90f5-340f-93aa-1bbcebcbbd69", 
+                "imageSet": {}, 
+                "provider_name": "Motley Fool", 
+                "provider_publish_time": 1489065060, 
+                "rank": 7, 
+                "summary": "Why Pandora, Activision Blizzard, and LG Display belong on your watch list today.", 
+                "tag": "news", 
+                "thumbnail": "http://media.zenfs.com/en-US/homerun/motleyfool.com/05565f5a005496171627bf12648cc629", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "3 Tech Stocks to Buy in March", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=12q80ki1p/*http%3A//www.fool.com/investing/2017/03/09/3-tech-stocks-to-buy-in-march.aspx?yptr=yahoo"
+            }, 
+            {
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": true, 
+                "id": "59ffbac0-cb40-3cf6-8e4f-5b7589f53701", 
+                "imageSet": {}, 
+                "provider_name": "Business Wire", 
+                "provider_publish_time": 1489062240, 
+                "rank": 8, 
+                "summary": "Activision Blizzard, Inc.\u00a0 , the world's most successful standalone interactive entertainment company, has been recognized on Fortune's \"100 Best Companies to Work For\u00ae\" list in 2017.", 
+                "tag": "pr", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Activision Blizzard Recognized on Fortune\u2019s \u201c100 Best Companies to Work For\u00ae\u201d List for Third Consecutive Year", 
+                "url": "http://finance.yahoo.com/news/activision-blizzard-recognized-fortune-100-122400253.html"
+            }, 
+            {
+                "author_name": "Ben Fischer", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "b6ac740e-7015-37e2-a47f-66db5c1f88a9", 
+                "imageSet": {}, 
+                "provider_name": "American City Business Journals", 
+                "provider_publish_time": 1489014665, 
+                "rank": 9, 
+                "summary": "Blizzard Entertainment\u2019s road show for potential franchise buyers in its top-tier Overwatch League is finally getting started, just as complaints in the e-sports world over the publisher\u2019s lack of communication reach a fever pitch.  \u201cThe drought of information since the initial announcement has investor interest in a holding pattern, which is a difficult position when we continue to have burn rates to sustain the team,\u201d Lake said.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Blizzard Entertainment opens roadshow for new e-sports league", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=141olhfmc/*http%3A//www.bizjournals.com/losangeles/news/2017/03/08/blizzard-entertainment-opens-esports-roadshow.html?ana=yahoo&yptr=yahoo"
+            }, 
+            {
+                "author_name": "William Romov", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "0ac435af-a51a-3d3d-82cd-53711cfc0533", 
+                "imageSet": {}, 
+                "provider_name": "TheStreet.com", 
+                "provider_publish_time": 1489011960, 
+                "rank": 10, 
+                "summary": "The iconic company's brand-new console could help Nintendo break into the casual mobile gaming world. But will it be enough for investors?", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Can Nintendo Make the 'Switch' to Big-Time Profits?", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=146h274cp/*https%3A//www.thestreet.com/story/14031091/1/can-nintendo-make-the-switch-to-big-time-profits.html?puc=yahoo&cm_ven=YAHOO&yptr=yahoo"
+            }, 
+            {
+                "author_name": "Paul Tassi", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "5276f466-db74-3c2a-bbb9-dc4c841c2bca", 
+                "imageSet": {}, 
+                "provider_name": "Forbes", 
+                "provider_publish_time": 1489003080, 
+                "rank": 11, 
+                "summary": "Bungie just wrapped up its first livestream about the final event for Destiny 1, the \u201cAge of Triumph.\u201d Many players, myself included, were assuming that it would bring back the Vault of Glass for a grand finale, but it turns out, it\u2019s quite a bit more involved than that.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Destiny's Age of Triumph Is An Elaborate Finale For Die-Hard Players", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=16g51325b/*http%3A//www.forbes.com/sites/insertcoin/2017/03/08/destinys-age-of-triumph-is-an-elaborate-finale-for-die-hard-players/?utm_source=yahoo&utm_medium=partner&utm_campaign=yahootix&partner=yahootix&yptr=yahoo"
+            }, 
+            {
+                "author_name": "newsfeedback@fool.com (John Ballard)", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "30a31c18-b4fd-361d-ae03-88edbe347048", 
+                "imageSet": {}, 
+                "provider_name": "Motley Fool", 
+                "provider_publish_time": 1488933660, 
+                "rank": 12, 
+                "summary": "Here&#39;s why Activision Blizzard is my favorite investment in the growing video game industry.", 
+                "tag": "news", 
+                "thumbnail": "http://media.zenfs.com/en-US/homerun/motleyfool.com/1754f633860b0d2bd4cf0412c5efd763", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "5 Reasons Why I&#39;m Not Selling Activision Blizzard Anytime Soon", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=13fp91js1/*http%3A//www.fool.com/investing/2017/03/07/5-reasons-why-im-not-selling-activision-blizzard-a.aspx?yptr=yahoo"
+            }, 
+            {
+                "author_name": "PATRICK SEITZ", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "0afc6135-c579-3a9f-bcf3-434a80dcf9d6", 
+                "imageSet": {}, 
+                "provider_name": "Investor&#39;s Business Daily", 
+                "provider_publish_time": 1488923894, 
+                "rank": 13, 
+                "summary": "Activision Blizzard stock hit a record high on Tuesday, but received a ratings downgrade to buy from strong buy from CFRA Research.", 
+                "tag": "news", 
+                "thumbnail": "http://media.zenfs.com/en-US/homerun/ibd.com/da8a732acc447f75c20f905ac6169113", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Activision Blizzard Stock Hits Record High; Analyst Fears Top Near", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=14cfe3pq8/*http%3A//www.investors.com/news/technology/click/activision-blizzard-stock-hits-record-high-analyst-fears-top-near/?src=A00220A&yptr=yahoo"
+            }, 
+            {
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "4915fc90-626f-3e22-91b5-bb2ba44b3594", 
+                "imageSet": {}, 
+                "provider_name": "MarketWatch", 
+                "provider_publish_time": 1488911460, 
+                "rank": 14, 
+                "summary": "Technically speaking, the major U.S. benchmarks have pulled in from record territory, digesting the decisive March 1 breakout. Against this backdrop, the S&P 500 is pressing near-term support \u2014 the 2,367 ...", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "S&P 500 challenges the breakout point amid (still) bullish longer-term backdrop", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=13n24ki9c/*http%3A//www.marketwatch.com/News/Story/Story.aspx?guid=E6BFCAB0-035B-11E7-91A1-9CBD611D1FD6&siteid=yhoof2&yptr=yahoo"
+            }, 
+            {
+                "author_name": "Paul Tassi", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "12414883-290c-3d7d-94e4-85ae3b9b716b", 
+                "imageSet": {}, 
+                "provider_name": "Forbes", 
+                "provider_publish_time": 1488901920, 
+                "rank": 15, 
+                "summary": "Even if players are sad about losing their arsenal for Destiny 2, the allure of a max light Mythoclast as one final prize will be absolutely irresistible. If you are dedicated enough to still be playing Destiny this late in the game, chances are you will care enough to grab a Mythoclast.", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Why I'm Convinced Destiny's Parting Gift To Players Will Be A 400 Light Mythoclast", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=16t19mtjl/*http%3A//www.forbes.com/sites/insertcoin/2017/03/07/why-im-convinced-destinys-parting-gift-to-players-will-be-a-400-light-mythoclast/?utm_source=yahoo&utm_medium=partner&utm_campaign=yahootix&partner=yahootix&yptr=yahoo"
+            }, 
+            {
+                "author_name": "newsfeedback@fool.com (Travis Hoium)", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "dd15dae8-2bc0-3dde-b83a-89cabd3a643a", 
+                "imageSet": {}, 
+                "provider_name": "Motley Fool", 
+                "provider_publish_time": 1488896760, 
+                "rank": 16, 
+                "summary": "Earnings are on a roll and Activision Blizzard&#39;s shares are surging as a result.", 
+                "tag": "news", 
+                "thumbnail": "http://media.zenfs.com/en-US/homerun/motleyfool.com/ad2b54188b61d37934829267f380106a", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Why Shares of Activision Blizzard, Inc. Jumped 12% in February", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=13fcr6af1/*http%3A//www.fool.com/investing/2017/03/07/why-shares-of-activision-blizzard-inc-jumped-12-in.aspx?yptr=yahoo"
+            }, 
+            {
+                "author_name": "newsfeedback@fool.com (John Ballard)", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": false, 
+                "id": "24115381-fcea-304d-b506-8dbd933ff143", 
+                "imageSet": {}, 
+                "provider_name": "Motley Fool", 
+                "provider_publish_time": 1488853320, 
+                "rank": 17, 
+                "summary": "Game publishers and big brands see a huge opportunity with the large, growing global audience for e-sports.", 
+                "tag": "news", 
+                "thumbnail": "http://media.zenfs.com/en-US/homerun/motleyfool.com/9972bd195fc4f07fc670d1b139a97ab0", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "4 Signs E-Sports Is Already Huge", 
+                "url": "http://us.rd.yahoo.com/finance/SIG=12tarsu4c/*http%3A//www.fool.com/investing/2017/03/06/4-signs-e-sports-is-already-huge.aspx?yptr=yahoo"
+            }, 
+            {
+                "author_name": "GuruFocus.com", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": true, 
+                "id": "00701c73-e1ad-3ce1-8990-a270b4639d03", 
+                "imageSet": {}, 
+                "provider_name": "GuruFocus.com", 
+                "provider_publish_time": 1488833912, 
+                "rank": 18, 
+                "summary": "The less selective most investors are, the greater the returns will be to those investors who do discriminate between different kinds of stocks. Index funds are anti-value. You can be pro-value", 
+                "tag": "news", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Why the Rise of Index Funds Makes It Easier to Be a Value Investor", 
+                "url": "http://finance.yahoo.com/news/why-rise-index-funds-easier-205714507.html"
+            }, 
+            {
+                "author_name": "Zacks Equity Research", 
+                "featured": false, 
+                "gmtOffSetMilliseconds": -14400000, 
+                "hosted": true, 
+                "id": "e8acb9c5-3177-396f-9b94-958a8fda1f2f", 
+                "imageSet": {}, 
+                "provider_name": "Zacks", 
+                "provider_publish_time": 1488573908, 
+                "rank": 19, 
+                "summary": "The Japanese giant Nintendo (NTDOY), released it much anticipated console, Switch amid much fanfare. Also, Facebook Inc (FB) slashed price of its VR headset, Rift by $100 while Sony Corp's (SNE) PS VR breaks sales records.", 
+                "tag": "news", 
+                "thumbnail": "http://media.zenfs.com/en-US/homerun/zacks.com/15b8f65862b22583e1f559c73a18c441", 
+                "tickers": [
+                    "ATVI"
+                ], 
+                "timeZoneFullName": "America/New_York", 
+                "timeZoneShortName": "EDT", 
+                "title": "Videogame Stock Roundup: Nintendo's Switch Release, Facebook Rift Price Cut, Sony PS VR's Record Sales & More", 
+                "url": "http://finance.yahoo.com/news/videogame-stock-roundup-nintendos-switch-204508012.html"
+            }
+        ]
+    }, 
+    "Featured": {
+        "error": null, 
+        "result": []
+    }, 
+    "Meta": {
+        "error": null, 
+        "result": [
+            {
+                "next": 1488573907
+            }
+        ]
+    }
+}
