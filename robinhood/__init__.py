@@ -157,7 +157,7 @@ if __name__ == '__main__':
     from creds import get_robinhood_creds
 
     username, password = get_robinhood_creds()
-    assert rh.login('sivad77', 'qweQWE123*')
+    assert rh.login(username, password)
     # rh.logout()
     import pprint
 
